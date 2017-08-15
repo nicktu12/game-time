@@ -45,6 +45,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	const Block = __webpack_require__(1);
+	const Paddle = __webpack_require__(2);
 
 	const canvas = document.getElementById('canvas');
 	const context = canvas.getContext('2d');
@@ -73,11 +74,9 @@
 
 	  buildArray() {
 	    let blockArray = [];
-	    console.log('build array');
 	    for (var i = 0; i < 24; i++) {
-	      console.log('build loop');
-	      var x = 6.25 + i % 8 * 50;
-	      var y = 6.25 + i % 3 * 10;
+	      var x = 6.25 + i % 8 * 50 * 1.25;
+	      var y = 6.25 + i % 3 * 10 * 2.25;
 	      blockArray.push(new Blocks(x, y));
 	    }
 	    return blockArray;
@@ -91,6 +90,14 @@
 	}
 
 	module.exports = Blocks;
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+	console.log('paddle yo');
+
+	module.exports = Paddle;
 
 /***/ })
 /******/ ]);
