@@ -50,15 +50,13 @@
 	const context = canvas.getContext('2d');
 
 	var block = new Block();
-	block.draw(context);
 
-	buildBlocks();
+	var buildAnArray = block.buildArray();
+	block.buildBlocks(buildAnArray, context);
 
 /***/ }),
 /* 1 */
 /***/ (function(module, exports) {
-
-	//const context = canvas.getContext('2d');
 
 	class Blocks {
 	  constructor(x, y) {
@@ -72,26 +70,25 @@
 	    context.fillStyle = 'pink';
 	    context.fillRect(this.x, this.y, this.width, this.height);
 	  }
-	}
 
-	let buildBlocks = () => {
-	  let blockArray = [];
-	  for (var i = 0; i < 24; i++) {
-	    console.log('loop');
-	    var x = 6.25 + i % 8 * 50;
-	    var y = 6.25 + i % 3 * 10;
-	    blockArray.push(new Blocks(x, y));
-	    blockArray[i].draw(context);
+	  buildArray() {
+	    let blockArray = [];
+	    console.log('build array');
+	    for (var i = 0; i < 24; i++) {
+	      console.log('build loop');
+	      var x = 6.25 + i % 8 * 50;
+	      var y = 6.25 + i % 3 * 10;
+	      blockArray.push(new Blocks(x, y));
+	    }
+	    return blockArray;
 	  }
-	};
 
-	//
-	// for (var i = 0; i < 24; i++) {
-	//
-	//     var x = 30 + (i % 8) * 30;
-	//     var y = 30 + (i % 3) * 30;
-	//     invaders.push(new Invader(game, {x: x, y: y }));
-	//   }
+	  buildBlocks(array, context) {
+	    for (var i = 0; i < array.length; i++) {
+	      array[i].draw(context);
+	    }
+	  }
+	}
 
 	module.exports = Blocks;
 
