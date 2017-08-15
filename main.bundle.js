@@ -46,13 +46,52 @@
 
 	const Block = __webpack_require__(1);
 
+	const canvas = document.getElementById('canvas');
+	const context = canvas.getContext('2d');
+
+	var block = new Block();
+	block.draw(context);
+
+	buildBlocks();
+
 /***/ }),
 /* 1 */
 /***/ (function(module, exports) {
 
-	class Blocks {}
+	//const context = canvas.getContext('2d');
 
-	console.log('blocks working');
+	class Blocks {
+	  constructor(x, y) {
+	    this.x = x;
+	    this.y = y;
+	    this.width = 50;
+	    this.height = 10;
+	  }
+
+	  draw(context) {
+	    context.fillStyle = 'pink';
+	    context.fillRect(this.x, this.y, this.width, this.height);
+	  }
+	}
+
+	let buildBlocks = () => {
+	  let blockArray = [];
+	  for (var i = 0; i < 24; i++) {
+	    console.log('loop');
+	    var x = 6.25 + i % 8 * 50;
+	    var y = 6.25 + i % 3 * 10;
+	    blockArray.push(new Blocks(x, y));
+	    blockArray[i].draw(context);
+	  }
+	};
+
+	//
+	// for (var i = 0; i < 24; i++) {
+	//
+	//     var x = 30 + (i % 8) * 30;
+	//     var y = 30 + (i % 3) * 30;
+	//     invaders.push(new Invader(game, {x: x, y: y }));
+	//   }
 
 	module.exports = Blocks;
 
