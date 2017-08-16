@@ -58,7 +58,7 @@
 	const context = canvas.getContext('2d');
 
 	var block = new Block();
-	var paddle = new Paddle(100, 100);
+	var paddle = new Paddle(225, 476);
 	var ball = new Ball();
 
 	var gamePieces = [block, paddle, ball];
@@ -67,6 +67,8 @@
 	  context.clearRect(0, 0, canvas.width, canvas.height);
 	  paddle.draw(context);
 	  ball.draw(context);
+	  ball.bounceWalls();
+	  ball.bouncePaddle(paddle);
 	  var buildAnArray = block.buildArray();
 	  block.buildBlocks(buildAnArray, context);
 	  requestAnimationFrame(gameLoop);
@@ -74,13 +76,10 @@
 
 	requestAnimationFrame(gameLoop);
 
-	canvas.addEventListener('keydown', function (e) {
-	  console.log('hi');
+	document.addEventListener('keydown', function (e) {
 	  if (e.keyCode === 39) {
-	    console.log('right');
 	    paddle.moveRight();
 	  } else if (e.keyCode === 37) {
-	    console.log('left');
 	    paddle.moveLeft();
 	  }
 	});
@@ -130,12 +129,12 @@
 	    this.x = x;
 	    this.y = y;
 	    this.width = 50;
-	    this.height = 10;
+	    this.height = 12;
 	  }
 
 	  draw(context) {
 	    context.fillStyle = 'red';
-	    context.fillRect(canvas.width / 2 - 25, canvas.height - this.height * 2.25, this.width, this.height);
+	    context.fillRect(this.x, this.y, this.width, this.height);
 	  }
 
 	  moveRight() {
@@ -171,14 +170,28 @@
 	    context.closePath();
 	    this.x += this.moveX;
 	    this.y += this.moveY;
+	    console.log();
 	  }
 
-	  move() {}
+	  bounceWalls() {
+	    if (this.x + 4 === canvas.width) {
+	      this.moveX = -this.moveX;
+	    } else if (this.x - 4 === 0) {
+	      this.moveX = -this.moveX;
+	    } else if (this.y - 4 === 0) {
+	      this.moveY = -this.moveY;
+	    }
+	  }
+
+	  bouncePaddle(paddle) {
+	    let paddleRight = paddle.x + 25;
+	    let paddleLeft = paddle.x - 25;
+	    if (this.y === paddle.y - 6 && this.x > paddleLeft && this.x < paddleRight) {
+	      this.moveY = -this.moveY;
+	    }
+	  }
 
 	}
-
-	//setInterval(draw, 10);
-
 
 	module.exports = Ball;
 
