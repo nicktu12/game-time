@@ -44,12 +44,49 @@
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	const Block = __webpack_require__(1);
-	const Paddle = __webpack_require__(2);
-	const Game = __webpack_require__(3);
+	const Game = __webpack_require__(1);
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	const Block = __webpack_require__(2);
+	const Paddle = __webpack_require__(3);
+	const Ball = __webpack_require__(4);
+
+	const canvas = document.getElementById('canvas');
+	const context = canvas.getContext('2d');
+
+	var block = new Block();
+	var paddle = new Paddle(100, 100);
+	var ball = new Ball();
+
+	var gamePieces = [block, paddle, ball];
+
+	function gameLoop() {
+	  context.clearRect(0, 0, canvas.width, canvas.height);
+	  paddle.draw(context);
+	  ball.draw(context);
+	  var buildAnArray = block.buildArray();
+	  block.buildBlocks(buildAnArray, context);
+	  requestAnimationFrame(gameLoop);
+	}
+
+	requestAnimationFrame(gameLoop);
+
+	canvas.addEventListener('keydown', function (e) {
+	  console.log('hi');
+	  if (e.keyCode === 39) {
+	    console.log('right');
+	    paddle.moveRight();
+	  } else if (e.keyCode === 37) {
+	    console.log('left');
+	    paddle.moveLeft();
+	  }
+	});
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports) {
 
 	class Blocks {
@@ -85,7 +122,7 @@
 	module.exports = Blocks;
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports) {
 
 	class Paddle {
@@ -98,7 +135,7 @@
 
 	  draw(context) {
 	    context.fillStyle = 'red';
-	    context.fillRect(this.x, canvas.height - this.height * 2.25, this.width, this.height);
+	    context.fillRect(canvas.width / 2 - 25, canvas.height - this.height * 2.25, this.width, this.height);
 	  }
 
 	  moveRight() {
@@ -113,31 +150,37 @@
 	module.exports = Paddle;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports) {
 
-	const canvas = document.getElementById('canvas');
-	const context = canvas.getContext('2d');
-
-	var block = new Block();
-
-	var paddle = new Paddle(100, 100);
-	paddle.draw(context);
-
-	var buildAnArray = block.buildArray();
-	block.buildBlocks(buildAnArray, context);
-
-	document.addEventListener('keydown', function (e) {
-	  if (e.keyCode === 39) {
-	    console.log(paddle.moveRight);
-	    paddle.moveRight();
-	  } else if (e.keyCode === 37) {
-	    console.log(27);
-	    paddle.moveLeft();
+	class Ball {
+	  constructor() {
+	    this.x = canvas.width / 2;
+	    this.y = canvas.height - 50;
+	    this.width = 8;
+	    this.height = 8;
+	    this.moveX = 2;
+	    this.moveY = -2;
 	  }
-	});
 
-	module.exports = Game;
+	  draw(context) {
+	    context.beginPath();
+	    context.arc(this.x, this.y, 8, 0, Math.PI * 2);
+	    context.fillStyle = 'turquoise';
+	    context.fill();
+	    context.closePath();
+	    this.x += this.moveX;
+	    this.y += this.moveY;
+	  }
+
+	  move() {}
+
+	}
+
+	//setInterval(draw, 10);
+
+
+	module.exports = Ball;
 
 /***/ })
 /******/ ]);
