@@ -63,14 +63,16 @@
 
 	var gamePieces = [block, paddle, ball];
 
+	var buildAnArray = block.buildArray();
+
 	function gameLoop() {
 	  context.clearRect(0, 0, canvas.width, canvas.height);
 	  paddle.draw(context);
 	  ball.draw(context);
 	  ball.bounceWalls();
 	  ball.bouncePaddle(paddle);
-	  var buildAnArray = block.buildArray();
 	  block.buildBlocks(buildAnArray, context);
+	  block.breakBlocks(buildAnArray, ball, context);
 	  requestAnimationFrame(gameLoop);
 	}
 
@@ -94,6 +96,7 @@
 	    this.y = y;
 	    this.width = 50;
 	    this.height = 10;
+	    this.status = 1;
 	  }
 
 	  draw(context) {
@@ -104,16 +107,34 @@
 	  buildArray() {
 	    let blockArray = [];
 	    for (var i = 0; i < 24; i++) {
-	      var x = 6.25 + i % 8 * 50 * 1.25;
-	      var y = 6.25 + i % 3 * 10 * 2.25;
-	      blockArray.push(new Blocks(x, y));
+	      this.x = 6.25 + i % 8 * 50 * 1.25;
+	      this.y = 6 + i % 3 * 10 * 2;
+	      blockArray.push(new Blocks(this.x, this.y));
 	    }
 	    return blockArray;
 	  }
 
+	  // blockStatus(context) {
+	  //   if (this.status === 0) {
+	  //     context.clearRect(this.x, this.y, this.width, this.height);
+	  //   }
+	  // }
+
 	  buildBlocks(array, context) {
 	    for (var i = 0; i < array.length; i++) {
 	      array[i].draw(context);
+	    }
+	  }
+
+	  breakBlocks(array, ball, context) {
+	    for (var i = 0; i < array.length; i++) {
+	      if (ball.y - 4 === array[i].y + 10) {
+	        this.status = 0;
+	        // this.blockStatus(context);
+	        ball.moveY = -ball.moveY;
+	        console.log(array[i]);
+	        array.splice(array[i], 1);
+	      }
 	    }
 	  }
 	}
@@ -138,11 +159,15 @@
 	  }
 
 	  moveRight() {
-	    this.x += 7;
+	    if (this.x + 50 < 499) {
+	      this.x += 7;
+	    }
 	  }
 
 	  moveLeft() {
-	    this.x -= 7;
+	    if (this.x > 1) {
+	      this.x -= 7;
+	    }
 	  }
 	}
 
@@ -158,8 +183,8 @@
 	    this.y = canvas.height - 50;
 	    this.width = 8;
 	    this.height = 8;
-	    this.moveX = 2;
-	    this.moveY = -2;
+	    this.moveX = .5;
+	    this.moveY = -.5;
 	  }
 
 	  draw(context) {
@@ -170,7 +195,6 @@
 	    context.closePath();
 	    this.x += this.moveX;
 	    this.y += this.moveY;
-	    console.log();
 	  }
 
 	  bounceWalls() {
@@ -184,8 +208,8 @@
 	  }
 
 	  bouncePaddle(paddle) {
-	    let paddleRight = paddle.x + 25;
-	    let paddleLeft = paddle.x - 25;
+	    let paddleRight = paddle.x + 50;
+	    let paddleLeft = paddle.x;
 	    if (this.y === paddle.y - 6 && this.x > paddleLeft && this.x < paddleRight) {
 	      this.moveY = -this.moveY;
 	    }
