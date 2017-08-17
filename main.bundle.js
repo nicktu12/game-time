@@ -59,7 +59,7 @@
 
 	var block = new Block();
 	var paddle = new Paddle(225, 476);
-	var ball = new Ball();
+	var ball = new Ball(canvas.width / 2, canvas.height - 50);
 
 	var gamePieces = [block, paddle, ball];
 
@@ -85,6 +85,8 @@
 	    paddle.moveLeft();
 	  }
 	});
+
+	module.exports = Game;
 
 /***/ }),
 /* 2 */
@@ -126,17 +128,19 @@
 	    }
 	  }
 
-	  breakBlocks(array, ball, context) {
+	  breakBlocks(array, ball) {
 	    for (var i = 0; i < array.length; i++) {
-	      if (ball.y - 4 === array[i].y + 10) {
-	        this.status = 0;
-	        // this.blockStatus(context);
+	      if (ball.y - 4 === array[i].y + 10 && ball.x <= array[i].x + 25 && ball.x >= array[i].x) {
 	        ball.moveY = -ball.moveY;
-	        console.log(array[i]);
-	        array.splice(array[i], 1);
+	        console.log("array id:", i, "array[i] coordinates: ", array[i].x, ",", array[i].y);
+	        console.log("array id:", i, "ball coordinates: ", ball.x, ",", ball.y);
+	        console.log("array id:", i, array[i]);
+	        array.splice(i, 1);
+	        console.log("array id:", i, "array length", array.length);
 	      }
 	    }
 	  }
+
 	}
 
 	module.exports = Blocks;
@@ -169,6 +173,7 @@
 	      this.x -= 7;
 	    }
 	  }
+
 	}
 
 	module.exports = Paddle;
@@ -178,13 +183,13 @@
 /***/ (function(module, exports) {
 
 	class Ball {
-	  constructor() {
-	    this.x = canvas.width / 2;
-	    this.y = canvas.height - 50;
+	  constructor(x, y) {
+	    this.x = x;
+	    this.y = y;
 	    this.width = 8;
 	    this.height = 8;
-	    this.moveX = .5;
-	    this.moveY = -.5;
+	    this.moveX = 2;
+	    this.moveY = -2;
 	  }
 
 	  draw(context) {
@@ -196,6 +201,8 @@
 	    this.x += this.moveX;
 	    this.y += this.moveY;
 	  }
+
+	  // refactor to create move method
 
 	  bounceWalls() {
 	    if (this.x + 4 === canvas.width) {
@@ -210,6 +217,7 @@
 	  bouncePaddle(paddle) {
 	    let paddleRight = paddle.x + 50;
 	    let paddleLeft = paddle.x;
+
 	    if (this.y === paddle.y - 6 && this.x > paddleLeft && this.x < paddleRight) {
 	      this.moveY = -this.moveY;
 	    }
