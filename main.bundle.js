@@ -69,7 +69,7 @@
 	  context.clearRect(0, 0, canvas.width, canvas.height);
 	  paddle.draw(context);
 	  ball.draw(context);
-	  ball.bounceWalls();
+	  ball.bounceWalls(canvas.width);
 	  ball.bouncePaddle(paddle);
 	  block.buildBlocks(buildAnArray, context);
 	  block.breakBlocks(buildAnArray, ball, context);
@@ -204,8 +204,8 @@
 
 	  // refactor to create move method
 
-	  bounceWalls() {
-	    if (this.x + 4 === canvas.width) {
+	  bounceWalls(canvasWidth) {
+	    if (this.x + 4 === canvasWidth) {
 	      this.moveX = -this.moveX;
 	    } else if (this.x - 4 === 0) {
 	      this.moveX = -this.moveX;
