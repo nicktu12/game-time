@@ -130,7 +130,7 @@
 
 	  breakBlocks(array, ball) {
 	    for (var i = 0; i < array.length; i++) {
-	      if (ball.y - 4 === array[i].y + 10 && ball.x <= array[i].x + 25 && ball.x >= array[i].x) {
+	      if (ball.y - 4 <= array[i].y + 10 && ball.x <= array[i].x + 25 && ball.x >= array[i].x) {
 	        ball.moveY = -ball.moveY;
 	        console.log("array id:", i, "array[i] coordinates: ", array[i].x, ",", array[i].y);
 	        console.log("array id:", i, "ball coordinates: ", ball.x, ",", ball.y);
@@ -222,7 +222,6 @@
 	      this.moveY = -this.moveY;
 	    }
 	  }
-
 	}
 
 	module.exports = Ball;
