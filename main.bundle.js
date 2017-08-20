@@ -64,18 +64,18 @@
 	var container = document.getElementById('container');
 
 	var buildAnArray = block.buildLevelOne();
-	console.log(buildAnArray);
 
-	function gameLoop() {
+	function gameLoop(e) {
 	  context.clearRect(0, 0, canvas.width, canvas.height);
 	  paddle.draw(context);
 	  ball.draw(context);
 	  ball.bounceWalls(canvas.width);
 	  ball.bouncePaddle(paddle);
-	  block.buildBlocks(buildAnArray, context);
-	  block.breakBlocks(buildAnArray, ball, context);
+	  block.buildblock(buildAnArray, context);
+	  block.breakblock(buildAnArray, ball, game);
 	  game.die(ball, canvas);
 	  game.levelUp();
+	  game.levelUp(context);
 	  requestAnimationFrame(gameLoop);
 	}
 
@@ -93,13 +93,14 @@
 	  }
 	});
 
+	canvas.addEventListener('mousemove', function (e) {
+	  paddle.cursorHandler(e);
+	});
+
 	var newLifeButton = document.createElement('button');
 	var livesCounterOnDom = document.createElement('p');
 
-	// var t = document.createTextNode("Start next life");
-
 	class Game {
-
 	  constructor() {
 	    this.livesRemaining = 3;
 	    this.currentLevel = 1;
@@ -141,22 +142,21 @@
 	    }
 	  }
 
-	  levelUp() {
+	  levelUp(array, context) {
 	    if (this.currentLevel === 1 && buildAnArray.length === 0) {
-	      alert('Good job!');
+	      alert('Good job - you leveled up!');
 	      this.currentLevel = 2;
 	      buildAnArray = block.buildLevelTwo();
 	    } else if (this.currentLevel === 2 && buildAnArray.length === 0) {
-	      alert('Good job!');
+	      alert('You made it to level 3!');
 	      this.currentLevel = 3;
 	      buildAnArray = block.buildLevelThree();
 	    } else if (this.currentLevel === 3 && buildAnArray.length === 0) {
-	      alert('Good job!');
+	      alert('moving to level 4');
 	      this.currentLevel = 4;
 	      buildAnArray = block.buildLevelFour();
 	    }
 	  }
-
 	}
 
 	var game = new Game();
@@ -169,31 +169,40 @@
 
 	game.lives();
 
-	// newLifeButton.addEventListener('click', function(ball) {
-	//   console.log('hii');
-	//   var ball = new Ball(canvas.width / 2, canvas.height - 50);
-	//   game.startGame(gameLoop);
-	// });
-
-
 	module.exports = Game;
 
 /***/ }),
 /* 2 */
 /***/ (function(module, exports) {
 
-	class Blocks {
-	  constructor(x, y) {
+	class Block {
+	  constructor(x, y, special = false) {
 	    this.x = x;
 	    this.y = y;
 	    this.width = 50;
 	    this.height = 10;
 	    this.status = 1;
+	    this.special = special;
 	  }
 
 	  draw(context) {
-	    context.fillStyle = 'pink';
-	    context.fillRect(this.x, this.y, this.width, this.height);
+	    if (this.special === true) {
+	      context.fillStyle = '#99FF66';
+	      context.fillRect(this.x, this.y, this.width, this.height);
+	    } else {
+	      context.fillStyle = '#FF0066';
+	      context.fillRect(this.x, this.y, this.width, this.height);
+	    }
+	  }
+
+	  //   Array.prototype.randomElement = function () {
+	  //     return this[Math.floor(Math.random() * this.length)]
+	  // }
+
+	  specialBlock(array, numberOfSpecialblock) {
+	    for (var i = 0; i < numberOfSpecialblock; i++) {
+	      array[Math.floor(Math.random() * array.length)].special = true;
+	    }
 	  }
 
 	  buildLevelOne() {
@@ -201,8 +210,9 @@
 	    for (var i = 0; i < 24; i++) {
 	      this.x = 6.25 + i % 8 * 50 * 1.25;
 	      this.y = 6 + i % 3 * 10 * 2;
-	      levelOneArray.push(new Blocks(this.x, this.y));
+	      levelOneArray.push(new Block(this.x, this.y));
 	    }
+	    this.specialBlock(levelOneArray, 2);
 	    return levelOneArray;
 	  }
 
@@ -212,25 +222,25 @@
 	    for (var i = 0; i < 12; i++) {
 	      this.x = 6.25 + i % 3 * 50 * 1.25;
 	      this.y = 6 + i % 4 * 10 * 2;
-	      levelTwoArray.push(new Blocks(this.x, this.y));
+	      levelTwoArray.push(new Block(this.x, this.y));
 	    }
 
 	    for (var i = 0; i < 12; i++) {
 	      this.x = 312.5 + (6.25 + i % 3 * 50 * 1.25);
 	      this.y = 6 + i % 4 * 10 * 2;
-	      levelTwoArray.push(new Blocks(this.x, this.y));
+	      levelTwoArray.push(new Block(this.x, this.y));
 	    }
 
 	    return levelTwoArray;
 	  }
 
-	  buildLevelThree() {
+	  buildLevelThree(context) {
 	    let levelThreeArray = [];
 
-	    for (var i = 0; i < 12; i++) {
-	      this.x = 6.25 + i % 2 * 50 * 1.25;
-	      this.y = 6 + i % 6 * 10 * 2;
-	      levelThreeArray.push(new Blocks(this.x, this.y));
+	    for (var i = 0; i < 24; i++) {
+	      this.x = 193.75 + i % 2 * 50 * 1.25;
+	      this.y = 125 + i % 3 * 10 * 2;
+	      levelThreeArray.push(new Block(this.x, this.y));
 	    }
 
 	    return levelThreeArray;
@@ -242,60 +252,65 @@
 	    for (var i = 0; i < 12; i++) {
 	      this.x = 6.25 + i % 3 * 50 * 1.25;
 	      this.y = 6 + i % 4 * 10 * 2;
-	      levelFourArray.push(new Blocks(this.x, this.y));
+	      levelFourArray.push(new Block(this.x, this.y));
 	    }
 
 	    for (var i = 0; i < 12; i++) {
 	      this.x = 312.5 + (6.25 + i % 3 * 50 * 1.25);
 	      this.y = 6 + i % 4 * 10 * 2;
-	      levelFourArray.push(new Blocks(this.x, this.y));
+	      levelFourArray.push(new Block(this.x, this.y));
 	    }
 
 	    for (var i = 0; i < 12; i++) {
 	      this.x = 156.25 + (6.25 + i % 3 * 50 * 1.25);
 	      this.y = 88 + (6 + i % 4 * 10 * 2);
-	      levelFourArray.push(new Blocks(this.x, this.y));
+	      levelFourArray.push(new Block(this.x, this.y));
 	    }
 
 	    for (var i = 0; i < 12; i++) {
 	      this.x = 6.25 + i % 3 * 50 * 1.25;
 	      this.y = 172 + (6 + i % 4 * 10 * 2);
-	      levelFourArray.push(new Blocks(this.x, this.y));
+	      levelFourArray.push(new Block(this.x, this.y));
 	    }
 
 	    for (var i = 0; i < 12; i++) {
 	      this.x = 312.5 + (6.25 + i % 3 * 50 * 1.25);
 	      this.y = 172 + (6 + i % 4 * 10 * 2);
-	      levelFourArray.push(new Blocks(this.x, this.y));
+	      levelFourArray.push(new Block(this.x, this.y));
 	    }
 
 	    return levelFourArray;
 	  }
 
-	  // blockStatus(context) {
-	  //   if (this.status === 0) {
-	  //     context.clearRect(this.x, this.y, this.width, this.height);
+	  buildblock(array, context) {
+	    for (var i = 0; i < array.length; i++) {
+	      array[i].draw(context);
+	      //assign each block it's own status of 1
+	    }
+	  }
+
+	  // buildblockLevelThree(array, context) {
+	  //   for (var i = 0; i < array.length; i++) {
+	  //     array[i].drawSmall(context);
 	  //   }
 	  // }
 
-	  buildBlocks(array, context) {
-	    for (var i = 0; i < array.length; i++) {
-	      array[i].draw(context);
-	    }
-	  }
-
-	  breakBlocks(array, ball) {
+	  breakblock(array, ball, game) {
 	    for (var i = 0; i < array.length; i++) {
 	      if (ball.y + 4 >= array[i].y && ball.y - 4 <= array[i].y + 10 && ball.x <= array[i].x + 50 && ball.x >= array[i].x) {
 	        ball.moveY = -ball.moveY;
+	        if (array[i].special === true) {
+	          console.log(ball.x, ball.y);
+	          array.splice(i, 1);
+	        };
 	        array.splice(i, 1);
+	        console.log(array[i]);
 	      }
 	    }
 	  }
-
 	}
 
-	module.exports = Blocks;
+	module.exports = Block;
 
 /***/ }),
 /* 3 */
@@ -310,19 +325,32 @@
 	  }
 
 	  draw(context) {
-	    context.fillStyle = 'red';
+	    context.fillStyle = '#33CCFF';
 	    context.fillRect(this.x, this.y, this.width, this.height);
 	  }
 
 	  moveRight() {
 	    if (this.x + 50 < 499) {
 	      this.x += 10;
+	      console.log(this.x);
 	    }
 	  }
 
 	  moveLeft() {
 	    if (this.x > 1) {
 	      this.x -= 10;
+	      console.log(this.x);
+	    }
+	  }
+
+	  cursorHandler(e) {
+	    var cursorX = e.clientX - canvas.offsetLeft;
+	    this.x = cursorX - 25;
+
+	    if (cursorX <= 25) {
+	      this.x = 0;
+	    } else if (cursorX > canvas.width - 25) {
+	      this.x = canvas.width - 50;
 	    }
 	  }
 
@@ -347,7 +375,7 @@
 	  draw(context) {
 	    context.beginPath();
 	    context.arc(this.x, this.y, 8, 0, Math.PI * 2);
-	    context.fillStyle = 'turquoise';
+	    context.fillStyle = '#FFFF33';
 	    context.fill();
 	    context.closePath();
 	    this.x += this.moveX;
