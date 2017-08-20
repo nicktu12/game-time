@@ -89,7 +89,10 @@
 
 	document.addEventListener('keydown', function (e) {
 	  if (e.keyCode === 65) {
-	    buildAnArray.length = 0;
+	    for (var i = 0; i < buildAnArray.length; i++) {
+	      console.log(buildAnArray.length);
+	    }
+	    buildAnArray.length--;
 	  }
 	});
 
@@ -126,7 +129,6 @@
 
 	  nextLife(ball) {
 	    newLifeButton.addEventListener('click', function () {
-	      console.log(ball.moveX);
 	      ball.moveX = 2;
 	      ball.moveY = -2;
 	    });
@@ -147,7 +149,7 @@
 	      alert('Good job - you leveled up!');
 	      this.currentLevel = 2;
 	      buildAnArray = block.buildLevelTwo();
-	    } else if (this.currentLevel === 2 && buildAnArray.length === 0) {
+	    } else if (this.currentLevel === 2 && buildAnArray.length === 2) {
 	      alert('You made it to level 3!');
 	      this.currentLevel = 3;
 	      buildAnArray = block.buildLevelThree();
@@ -155,6 +157,8 @@
 	      alert('moving to level 4');
 	      this.currentLevel = 4;
 	      buildAnArray = block.buildLevelFour();
+	    } else if (this.currentLevel === 4 && buildAnArray.length === 7) {
+	      alert('you won. no more levels, sorry');
 	    }
 	  }
 	}
@@ -176,18 +180,22 @@
 /***/ (function(module, exports) {
 
 	class Block {
-	  constructor(x, y, special = false) {
+	  constructor(x, y, special = false, unbreakable = false) {
 	    this.x = x;
 	    this.y = y;
 	    this.width = 50;
 	    this.height = 10;
 	    this.status = 1;
 	    this.special = special;
+	    this.unbreakable = unbreakable;
 	  }
 
 	  draw(context) {
 	    if (this.special === true) {
 	      context.fillStyle = '#99FF66';
+	      context.fillRect(this.x, this.y, this.width, this.height);
+	    } else if (this.unbreakable === true) {
+	      context.fillStyle = '#EFECF0';
 	      context.fillRect(this.x, this.y, this.width, this.height);
 	    } else {
 	      context.fillStyle = '#FF0066';
@@ -220,15 +228,29 @@
 	    let levelTwoArray = [];
 
 	    for (var i = 0; i < 12; i++) {
-	      this.x = 6.25 + i % 3 * 50 * 1.25;
-	      this.y = 6 + i % 4 * 10 * 2;
-	      levelTwoArray.push(new Block(this.x, this.y));
+	      if (i === 7) {
+	        this.unbreakable = true;
+	        this.x = 6.25 + i % 3 * 50 * 1.25;
+	        this.y = 6 + i % 4 * 10 * 2;
+	        levelTwoArray.push(new Block(this.x, this.y, false, this.unbreakable));
+	      } else {
+	        this.x = 6.25 + i % 3 * 50 * 1.25;
+	        this.y = 6 + i % 4 * 10 * 2;
+	        levelTwoArray.push(new Block(this.x, this.y));
+	      }
 	    }
 
 	    for (var i = 0; i < 12; i++) {
-	      this.x = 312.5 + (6.25 + i % 3 * 50 * 1.25);
-	      this.y = 6 + i % 4 * 10 * 2;
-	      levelTwoArray.push(new Block(this.x, this.y));
+	      if (i === 7) {
+	        this.unbreakable = true;
+	        this.x = 312.5 + (6.25 + i % 3 * 50 * 1.25);
+	        this.y = 6 + i % 4 * 10 * 2;
+	        levelTwoArray.push(new Block(this.x, this.y, false, this.unbreakable));
+	      } else {
+	        this.x = 312.5 + (6.25 + i % 3 * 50 * 1.25);
+	        this.y = 6 + i % 4 * 10 * 2;
+	        levelTwoArray.push(new Block(this.x, this.y));
+	      }
 	    }
 
 	    return levelTwoArray;
@@ -250,33 +272,68 @@
 	    let levelFourArray = [];
 
 	    for (var i = 0; i < 12; i++) {
-	      this.x = 6.25 + i % 3 * 50 * 1.25;
-	      this.y = 6 + i % 4 * 10 * 2;
-	      levelFourArray.push(new Block(this.x, this.y));
+	      if (i === 11) {
+	        this.unbreakable = true;
+	        this.x = 6.25 + i % 3 * 50 * 1.25;
+	        this.y = 6 + i % 4 * 10 * 2;
+	        levelFourArray.push(new Block(this.x, this.y, false, this.unbreakable));
+	      } else {
+	        this.x = 6.25 + i % 3 * 50 * 1.25;
+	        this.y = 6 + i % 4 * 10 * 2;
+	        levelFourArray.push(new Block(this.x, this.y));
+	      }
 	    }
 
 	    for (var i = 0; i < 12; i++) {
-	      this.x = 312.5 + (6.25 + i % 3 * 50 * 1.25);
-	      this.y = 6 + i % 4 * 10 * 2;
-	      levelFourArray.push(new Block(this.x, this.y));
+	      if (i === 3) {
+	        this.unbreakable = true;
+	        this.x = 312.5 + (6.25 + i % 3 * 50 * 1.25);
+	        this.y = 6 + i % 4 * 10 * 2;
+	        levelFourArray.push(new Block(this.x, this.y, false, this.unbreakable));
+	      } else {
+	        this.x = 312.5 + (6.25 + i % 3 * 50 * 1.25);
+	        this.y = 6 + i % 4 * 10 * 2;
+	        levelFourArray.push(new Block(this.x, this.y));
+	      }
 	    }
 
 	    for (var i = 0; i < 12; i++) {
-	      this.x = 156.25 + (6.25 + i % 3 * 50 * 1.25);
-	      this.y = 88 + (6 + i % 4 * 10 * 2);
-	      levelFourArray.push(new Block(this.x, this.y));
+	      if (i === 7) {
+	        this.unbreakable = true;
+	        this.x = 156.25 + (6.25 + i % 3 * 50 * 1.25);
+	        this.y = 88 + (6 + i % 4 * 10 * 2);
+	        levelFourArray.push(new Block(this.x, this.y, false, this.unbreakable));
+	      } else {
+	        this.x = 156.25 + (6.25 + i % 3 * 50 * 1.25);
+	        this.y = 88 + (6 + i % 4 * 10 * 2);
+	        levelFourArray.push(new Block(this.x, this.y));
+	      }
 	    }
 
 	    for (var i = 0; i < 12; i++) {
-	      this.x = 6.25 + i % 3 * 50 * 1.25;
-	      this.y = 172 + (6 + i % 4 * 10 * 2);
-	      levelFourArray.push(new Block(this.x, this.y));
+	      if (i === 3 || i === 11) {
+	        this.unbreakable = true;
+	        this.x = 6.25 + i % 3 * 50 * 1.25;
+	        this.y = 172 + (6 + i % 4 * 10 * 2);
+	        levelFourArray.push(new Block(this.x, this.y, false, this.unbreakable));
+	      } else {
+	        this.x = 6.25 + i % 3 * 50 * 1.25;
+	        this.y = 172 + (6 + i % 4 * 10 * 2);
+	        levelFourArray.push(new Block(this.x, this.y));
+	      }
 	    }
 
 	    for (var i = 0; i < 12; i++) {
-	      this.x = 312.5 + (6.25 + i % 3 * 50 * 1.25);
-	      this.y = 172 + (6 + i % 4 * 10 * 2);
-	      levelFourArray.push(new Block(this.x, this.y));
+	      if (i === 3 || i === 11) {
+	        this.unbreakable = true;
+	        this.x = 312.5 + (6.25 + i % 3 * 50 * 1.25);
+	        this.y = 172 + (6 + i % 4 * 10 * 2);
+	        levelFourArray.push(new Block(this.x, this.y, false, this.unbreakable));
+	      } else {
+	        this.x = 312.5 + (6.25 + i % 3 * 50 * 1.25);
+	        this.y = 172 + (6 + i % 4 * 10 * 2);
+	        levelFourArray.push(new Block(this.x, this.y));
+	      }
 	    }
 
 	    return levelFourArray;
@@ -299,12 +356,11 @@
 	    for (var i = 0; i < array.length; i++) {
 	      if (ball.y + 4 >= array[i].y && ball.y - 4 <= array[i].y + 10 && ball.x <= array[i].x + 50 && ball.x >= array[i].x) {
 	        ball.moveY = -ball.moveY;
-	        if (array[i].special === true) {
-	          console.log(ball.x, ball.y);
-	          array.splice(i, 1);
+	        if (array[i].unbreakable === true) {
+	          return;
 	        };
 	        array.splice(i, 1);
-	        console.log(array[i]);
+	        console.log(i);
 	      }
 	    }
 	  }
@@ -399,7 +455,11 @@
 	    let paddleLeft = paddle.x;
 
 	    if (this.y === paddle.y - 6 && this.x > paddleLeft && this.x < paddleRight) {
-	      this.moveY = -this.moveY * 1.2;
+	      if (this.moveY > 2 || this.move < -2) {
+	        this.moveY = -this.moveY;
+	      } else {
+	        this.moveY = -this.moveY * 1.1;
+	      }
 	    }
 	  }
 	}
