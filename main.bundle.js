@@ -70,7 +70,8 @@
 	  paddle.draw(context);
 	  ball.draw(context);
 	  ball.bounceWalls(canvas.width);
-	  ball.bouncePaddle(paddle);
+	  ball.bouncePaddleY(paddle);
+	  ball.bouncePaddleModulation(paddle);
 	  block.buildblock(buildAnArray, context);
 	  block.breakblock(buildAnArray, ball, game);
 	  game.die(ball, canvas);
@@ -90,9 +91,11 @@
 	document.addEventListener('keydown', function (e) {
 	  if (e.keyCode === 65) {
 	    for (var i = 0; i < buildAnArray.length; i++) {
-	      console.log(buildAnArray.length);
+	      if (buildAnArray[i].unbreakable === false) {
+	        console.log(buildAnArray.length);
+	        buildAnArray.splice(i, 1);
+	      }
 	    }
-	    buildAnArray.length--;
 	  }
 	});
 
@@ -159,6 +162,7 @@
 	      buildAnArray = block.buildLevelFour();
 	    } else if (this.currentLevel === 4 && buildAnArray.length === 7) {
 	      alert('you won. no more levels, sorry');
+	      location.reload();
 	    }
 	  }
 	}
@@ -360,7 +364,6 @@
 	          return;
 	        };
 	        array.splice(i, 1);
-	        console.log(i);
 	      }
 	    }
 	  }
@@ -441,25 +444,78 @@
 	  // refactor to create move method
 
 	  bounceWalls(canvasWidth) {
-	    if (this.x + 4 === canvasWidth) {
+	    if (this.x + 4 >= canvasWidth) {
 	      this.moveX = -this.moveX;
-	    } else if (this.x - 4 === 0) {
+	    } else if (this.x - 4 <= 0) {
 	      this.moveX = -this.moveX;
 	    } else if (this.y - 4 <= 0) {
 	      this.moveY = -this.moveY;
 	    }
 	  }
 
-	  bouncePaddle(paddle) {
+	  bouncePaddleY(paddle) {
 	    let paddleRight = paddle.x + 50;
 	    let paddleLeft = paddle.x;
 
 	    if (this.y === paddle.y - 6 && this.x > paddleLeft && this.x < paddleRight) {
-	      if (this.moveY > 2 || this.move < -2) {
+	      if (this.moveY > 2 || this.moveY < -2) {
 	        this.moveY = -this.moveY;
 	      } else {
 	        this.moveY = -this.moveY * 1.1;
 	      }
+	    }
+	  }
+
+	  bouncePaddleModulation(paddle) {
+	    let paddleRight = paddle.x + 50;
+	    let paddleLeft = paddle.x;
+
+	    if (this.y === paddle.y - 6 && this.x > paddleLeft + 30 && this.x < paddleLeft + 40) {
+	      if (this.moveX < 4 || this.moveX > -4) {
+	        if (this.moveX < 0) {
+	          this.moveX = this.moveX * .9;
+	        } else {
+	          this.moveX = this.moveX * 1.1;
+	        }
+	      }
+	      console.log('q4');
+	    }
+
+	    if (this.y === paddle.y - 6 && this.x > paddleLeft + 40 && this.x < paddleRight) {
+	      if (this.moveX < 4 || this.moveX > -4) {
+	        if (this.moveX < 0) {
+	          this.moveX = this.moveX * .7;
+	        } else {
+	          this.moveX = this.moveX * 1.3;
+	        }
+	      }
+	      console.log('q5');
+	    }
+
+	    if (this.y === paddle.y - 6 && this.x > paddleLeft + 10 && this.x < paddleLeft + 20) {
+	      if (this.moveX < 4 || this.moveX > -4) {
+	        if (this.moveX > 0) {
+	          this.moveX = this.moveX * .9;
+	        } else {
+	          this.moveX = this.moveX * 1.1;
+	        }
+	      }
+	      console.log('q2');
+	    }
+
+	    if (this.y === paddle.y - 6 && this.x > paddleLeft && this.x < paddleLeft + 10) {
+	      if (this.moveX < 4 || this.moveX > -4) {
+	        if (this.moveX > 0) {
+	          this.moveX = this.moveX * .7;
+	        } else {
+	          this.moveX = this.moveX * 1.3;
+	        }
+	      }
+	      console.log('q1');
+	    }
+
+	    if (Math.random() > .8) {
+	      console.log(this.moveX);
 	    }
 	  }
 	}

@@ -51,6 +51,7 @@ body {
 /*ASIDE = LIVES LEFT COUNT*/
 aside {
   background: #614C67;
+  /*how do i make this NOT look like a button???*/
   padding: 8px 16px;
   border-radius: 4px;
   box-shadow: rgba(0,0,0,1) 0 1px 0;
@@ -59,42 +60,48 @@ aside {
   font-size: 15px;
   text-decoration: none;
   text-align: center;
-  width: 9%;
+  width: 6%;
   display: block;
   margin: 0 auto;
   margin-top: 1.5%;
   margin-bottom: 2.5%;
-  margin-left: 45.5%;
+  margin-left: 47%;
 }
 
-/*SECTION = NEW LIFE BUTTON*/
-section {
+/*===== SECTION (new life) & ARTICLE (level up) MODALS=====*/
+section,
+article {
   width: 20%;
   position: absolute;
   top: 20%;
   left: 40%;
-  background-color: rgba(255, 255, 255, .25);
+  background-color: rgba(240, 240, 237, .85);
   border-radius: 4px;
 }
 
-#openModal {
-  padding: 5px 5px 0 5px;
+#lostLifeModal,
+#levelUpModal {
+  padding: 5px 5px 0 10px;
   display: flex;
   flex-direction: column;
 }
 
-.lost-life {
+.lost-life,
+.level-up {
   padding: 5px;
-  color: #F0F0ED;
+  color: #1e1e1e;
   text-align: center;
   letter-spacing: 1px;
 }
 
-.lost-life-text {
+.lost-life-text,
+.level-up-text {
   padding: 10px 5px;
+  color: #1e1e1e;
 }
 
-#ready-for-next-life {
+#continue-to-next-life,
+#continue-to-next-level {
   border: none;
   background-color: #FF6633;
   font-size: 16px;
@@ -107,6 +114,7 @@ section {
   outline: none;
 }
 
-#ready-for-next-life:hover {
+#continue-to-next-life:hover,
+#continue-to-next-level:hover {
   background: #BF4D26;
 }
