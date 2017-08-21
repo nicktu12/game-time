@@ -159,6 +159,7 @@
 	  levelUpAlert(array, context) {
 	    if (this.currentLevel === 1 && buildAnArray.length === 0) {
 	      //ball needs to stop moving RIGHT HERE
+	      body.setAttribute('background', 'space2.jpg');
 	      document.body.appendChild(levelUpModal);
 	      levelUpModal.innerHTML = `
 	        <div id="levelUpModal">
@@ -282,24 +283,30 @@
 	    }
 	  }
 
-	  //   Array.prototype.randomElement = function () {
-	  //     return this[Math.floor(Math.random() * this.length)]
-	  // }
+	  randomSpecialBlocks(arr) {
+	    var buffer = [],
+	        start;
 
-	  specialBlock(array, numberOfSpecialblock) {
-	    for (var i = 0; i < numberOfSpecialblock; i++) {
-	      array[Math.floor(Math.random() * array.length)].special = true;
+	    for (var i = arr.length; i >= arr.length && i > 0; i--) {
+	      start = Math.floor(Math.random() * arr.length);
+	      buffer.push(arr.splice(start, 1)[0]);
 	    }
+
+	    return buffer;
 	  }
 
 	  buildLevelOne() {
 	    let levelOneArray = [];
+
 	    for (var i = 0; i < 24; i++) {
 	      this.x = 6.25 + i % 8 * 50 * 1.25;
 	      this.y = 6 + i % 3 * 10 * 2;
 	      levelOneArray.push(new Block(this.x, this.y));
 	    }
-	    this.specialBlock(levelOneArray, 2);
+	    // this.specialBlock(levelOneArray, 2);
+	    levelOneArray = this.randomSpecialBlocks(levelOneArray);
+	    levelOneArray[0].special = true;
+	    levelOneArray[1].special = true;
 	    return levelOneArray;
 	  }
 
@@ -545,7 +552,7 @@
 	    let paddleLeft = paddle.x;
 
 	    if (this.y === paddle.y - 6 && this.x > paddleLeft && this.x < paddleRight) {
-	      if (this.moveY > 2 || this.moveY < -2) {
+	      if (this.moveY > 4 || this.moveY < -4) {
 	        this.moveY = -this.moveY;
 	      } else {
 	        this.moveY = -this.moveY * 1.1;
@@ -595,10 +602,6 @@
 	          this.moveX = this.moveX * 1.3;
 	        }
 	      }
-	    }
-
-	    if (Math.random() > .8) {
-	      // console.log(this.moveX);
 	    }
 	  }
 	}
