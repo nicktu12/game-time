@@ -75,8 +75,8 @@
 	  block.buildblock(buildAnArray, context);
 	  block.breakblock(buildAnArray, ball, game);
 	  game.die(ball, canvas);
-	  game.levelUp();
-	  game.levelUp(context);
+	  game.levelUpAlert();
+	  game.levelUpAlert(context);
 	  requestAnimationFrame(gameLoop);
 	}
 
@@ -103,8 +103,9 @@
 	  paddle.cursorHandler(e);
 	});
 
-	var newLifeButton = document.createElement('button');
-	var livesCounterOnDom = document.createElement('p');
+	var newLifeButton = document.createElement('section');
+	var livesCounterOnDom = document.createElement('aside');
+	var levelUpModal = document.createElement('article');
 
 	class Game {
 	  constructor() {
@@ -125,15 +126,23 @@
 	      this.livesRemaining--;
 	      this.lives();
 	      document.body.appendChild(newLifeButton);
-	      newLifeButton.innerHTML = "<p id='start-next-life-button'>Start Next Life</p>";
+	      newLifeButton.innerHTML = `
+	        <div id="lostLifeModal">
+	            <h2 class="lost-life">DEATH!</h2>
+	            <p class="lost-life-text">You are running low on lives - just ${this.livesRemaining} left! Click the button to continue on to your next life.</p>
+	            <button id="continue-to-next-life">Continue</button>
+	        </div>`;
 	      this.nextLife(ball);
 	    }
 	  }
 
 	  nextLife(ball) {
-	    newLifeButton.addEventListener('click', function () {
+	    var continueToNewLife = document.getElementById('continue-to-next-life');
+	    continueToNewLife.addEventListener('click', function () {
+	      console.log(newLifeButton);
 	      ball.moveX = 2;
 	      ball.moveY = -2;
+	      newLifeButton.remove();
 	    });
 	  }
 
@@ -147,32 +156,86 @@
 	    }
 	  }
 
-	  levelUp(array, context) {
+	  levelUpAlert(array, context) {
 	    if (this.currentLevel === 1 && buildAnArray.length === 0) {
-	      alert('Good job - you leveled up!');
+	      //ball needs to stop moving RIGHT HERE
+	      document.body.appendChild(levelUpModal);
+	      levelUpModal.innerHTML = `
+	        <div id="levelUpModal">
+	            <h2 class="level-up">NICE!</h2>
+	            <p class="level-up-text">On to the next challenge! Click the button to start level ${this.currentLevel + 1}.</p>
+	            <button id="continue-to-next-level">Continue</button>
+	        </div>`;
 	      this.currentLevel = 2;
-	      buildAnArray = block.buildLevelTwo();
+	      this.continueToLevelTwo();
 	    } else if (this.currentLevel === 2 && buildAnArray.length === 2) {
-	      alert('You made it to level 3!');
+	      //ball needs to stop moving RIGHT HERE
+	      document.body.appendChild(levelUpModal);
+	      levelUpModal.innerHTML = `
+	        <div id="levelUpModal">
+	            <h2 class="level-up">NICE!</h2>
+	            <p class="level-up-text">On to the next challenge! Click the button to start level ${this.currentLevel + 1}.</p>
+	            <button id="continue-to-next-level">Continue</button>
+	        </div>`;
 	      this.currentLevel = 3;
+	      this.continueToLevelThree();
 	      buildAnArray = block.buildLevelThree();
 	    } else if (this.currentLevel === 3 && buildAnArray.length === 0) {
-	      alert('moving to level 4');
+	      //ball needs to stop moving RIGHT HERE
+	      document.body.appendChild(levelUpModal);
+	      levelUpModal.innerHTML = `
+	        <div id="levelUpModal">
+	            <h2 class="level-up">NICE!</h2>
+	            <p class="level-up-text">On to the next challenge! Click the button to start level ${this.currentLevel + 1}.</p>
+	            <button id="continue-to-next-level">Continue</button>
+	        </div>`;
 	      this.currentLevel = 4;
 	      buildAnArray = block.buildLevelFour();
 	    } else if (this.currentLevel === 4 && buildAnArray.length === 7) {
-	      alert('you won. no more levels, sorry');
-	      location.reload();
+	      //ball needs to stop moving RIGHT HERE
+	      document.body.appendChild(levelUpModal);
+	      levelUpModal.innerHTML = `
+	        <div id="levelUpModal">
+	            <h2 class="level-up">YOU WON!!!</h2>
+	            <p class="level-up-text">We didn't think this was possible.</p>
+	            <button id="continue-to-next-level">Play Again</button>
+	        </div>`;
 	    }
+	  }
+
+	  continueToLevelTwo() {
+	    var levelUpBtn = document.getElementById('continue-to-next-level');
+	    levelUpBtn.addEventListener('click', function () {
+	      buildAnArray = block.buildLevelTwo();
+	      levelUpModal.remove();
+	    });
+	  }
+
+	  continueToLevelThree() {
+	    var levelUpBtn = document.getElementById('continue-to-next-level');
+	    levelUpBtn.addEventListener('click', function () {
+	      buildAnArray = block.buildLevelThree();
+	      levelUpModal.remove();
+	    });
+	  }
+
+	  continueToLevelFour() {
+	    var levelUpBtn = document.getElementById('continue-to-next-level');
+	    levelUpBtn.addEventListener('click', function () {
+	      buildAnArray = block.buildLevelFour();
+	      levelUpModal.remove();
+	      this.startGame();
+	    });
 	  }
 	}
 
 	var game = new Game();
-	var startButton = document.getElementById('start-button');
+	var startButton = document.getElementById('start-btn');
 
 	startButton.addEventListener('click', function () {
 	  game.startGame(gameLoop);
 	  startButton.disabled = true;
+	  startButton.style.backgroundColor = '#b4b4b4';
 	});
 
 	game.lives();
@@ -478,7 +541,6 @@
 	          this.moveX = this.moveX * 1.1;
 	        }
 	      }
-	      console.log('q4');
 	    }
 
 	    if (this.y === paddle.y - 6 && this.x > paddleLeft + 40 && this.x < paddleRight) {
@@ -489,7 +551,6 @@
 	          this.moveX = this.moveX * 1.3;
 	        }
 	      }
-	      console.log('q5');
 	    }
 
 	    if (this.y === paddle.y - 6 && this.x > paddleLeft + 10 && this.x < paddleLeft + 20) {
@@ -500,7 +561,6 @@
 	          this.moveX = this.moveX * 1.1;
 	        }
 	      }
-	      console.log('q2');
 	    }
 
 	    if (this.y === paddle.y - 6 && this.x > paddleLeft && this.x < paddleLeft + 10) {
@@ -511,11 +571,10 @@
 	          this.moveX = this.moveX * 1.3;
 	        }
 	      }
-	      console.log('q1');
 	    }
 
 	    if (Math.random() > .8) {
-	      console.log(this.moveX);
+	      // console.log(this.moveX);
 	    }
 	  }
 	}
