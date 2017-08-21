@@ -59,7 +59,7 @@
 
 	var block = new Block();
 	var paddle = new Paddle(225, 476);
-	var ball = new Ball(canvas.width / 2, canvas.height - 50);
+	var ball = new Ball(paddle.x + 35, paddle.y - 8);
 
 	var container = document.getElementById('container');
 
@@ -68,7 +68,7 @@
 	function gameLoop(e) {
 	  context.clearRect(0, 0, canvas.width, canvas.height);
 	  paddle.draw(context);
-	  ball.draw(context);
+	  ball.draw(context, paddle);
 	  ball.bounceWalls(canvas.width);
 	  ball.bouncePaddleY(paddle);
 	  ball.bouncePaddleModulation(paddle);
@@ -190,6 +190,7 @@
 	            <button id="continue-to-next-level">Continue</button>
 	        </div>`;
 	      this.currentLevel = 4;
+	      this.continueToLevelFour();
 	      buildAnArray = block.buildLevelFour();
 	    } else if (this.currentLevel === 4 && buildAnArray.length === 7) {
 	      //ball needs to stop moving RIGHT HERE
@@ -222,11 +223,12 @@
 	  continueToLevelFour() {
 	    var levelUpBtn = document.getElementById('continue-to-next-level');
 	    levelUpBtn.addEventListener('click', function () {
+	      console.log('play level 4 btn');
 	      buildAnArray = block.buildLevelFour();
 	      levelUpModal.remove();
-	      this.startGame();
 	    });
 	  }
+
 	}
 
 	var game = new Game();
@@ -236,6 +238,16 @@
 	  game.startGame(gameLoop);
 	  startButton.disabled = true;
 	  startButton.style.backgroundColor = '#b4b4b4';
+	});
+
+	canvas.addEventListener('click', function () {
+	  ball.initiateVelocity();
+	});
+
+	document.addEventListener('keydown', function (e) {
+	  if (e.keyCode === 32) {
+	    ball.initiateVelocity();
+	  }
 	});
 
 	game.lives();
@@ -490,18 +502,30 @@
 	    this.y = y;
 	    this.width = 8;
 	    this.height = 8;
-	    this.moveX = 2;
-	    this.moveY = -2;
+	    this.moveX = 0;
+	    this.moveY = -0;
 	  }
 
-	  draw(context) {
+	  draw(context, paddle) {
 	    context.beginPath();
 	    context.arc(this.x, this.y, 8, 0, Math.PI * 2);
 	    context.fillStyle = '#FFFF33';
 	    context.fill();
 	    context.closePath();
-	    this.x += this.moveX;
-	    this.y += this.moveY;
+	    if (this.moveX === 0) {
+	      this.x = paddle.x + 35;
+	      this.y = paddle.y - 8;
+	    } else {
+	      this.x += this.moveX;
+	      this.y += this.moveY;
+	    }
+	  }
+
+	  initiateVelocity() {
+	    if (this.moveX === 0) {
+	      this.moveX = 2;
+	      this.moveY = -2;
+	    }
 	  }
 
 	  // refactor to create move method
