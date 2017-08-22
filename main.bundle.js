@@ -72,8 +72,8 @@
 	  ball.bounceWalls(canvas.width);
 	  ball.bouncePaddleY(paddle);
 	  ball.bouncePaddleModulation(paddle);
-	  block.buildblock(buildAnArray, context);
-	  block.breakblock(buildAnArray, ball, game);
+	  block.buildBlock(buildAnArray, context);
+	  block.breakBlock(buildAnArray, ball);
 	  game.die(ball, canvas);
 	  game.levelUpAlert();
 	  game.levelUpAlert(context);
@@ -159,7 +159,10 @@
 	  levelUpAlert(array, context) {
 	    if (this.currentLevel === 1 && buildAnArray.length === 0) {
 	      //ball needs to stop moving RIGHT HERE
-	      body.setAttribute('background', 'space2.jpg');
+	      // document.body.style.backgroundImage = 'none';
+	      // document.body.style.backgroundImage = './assets/space2.jpg';
+
+
 	      document.body.appendChild(levelUpModal);
 	      levelUpModal.innerHTML = `
 	        <div id="levelUpModal">
@@ -425,7 +428,7 @@
 	    return levelFourArray;
 	  }
 
-	  buildblock(array, context) {
+	  buildBlock(array, context) {
 	    for (var i = 0; i < array.length; i++) {
 	      array[i].draw(context);
 	      //assign each block it's own status of 1
@@ -438,9 +441,9 @@
 	  //   }
 	  // }
 
-	  breakblock(array, ball, game) {
+	  breakBlock(array, ball) {
 	    for (var i = 0; i < array.length; i++) {
-	      if (ball.y + 4 >= array[i].y && ball.y - 4 <= array[i].y + 10 && ball.x <= array[i].x + 50 && ball.x >= array[i].x) {
+	      if (ball.y + 8 >= array[i].y && ball.y - 8 <= array[i].y + 10 && ball.x <= array[i].x + 50 && ball.x >= array[i].x) {
 	        ball.moveY = -ball.moveY;
 	        if (array[i].unbreakable === true) {
 	          return;
@@ -551,7 +554,7 @@
 	    let paddleRight = paddle.x + 50;
 	    let paddleLeft = paddle.x;
 
-	    if (this.y === paddle.y - 6 && this.x > paddleLeft && this.x < paddleRight) {
+	    if (this.y === paddle.y - 8 && this.x > paddleLeft && this.x < paddleRight) {
 	      if (this.moveY > 4 || this.moveY < -4) {
 	        this.moveY = -this.moveY;
 	      } else {
@@ -564,7 +567,7 @@
 	    let paddleRight = paddle.x + 50;
 	    let paddleLeft = paddle.x;
 
-	    if (this.y === paddle.y - 6 && this.x > paddleLeft + 30 && this.x < paddleLeft + 40) {
+	    if (this.y === paddle.y - 8 && this.x > paddleLeft + 30 && this.x < paddleLeft + 40) {
 	      if (this.moveX < 4 || this.moveX > -4) {
 	        if (this.moveX < 0) {
 	          this.moveX = this.moveX * .9;
@@ -574,7 +577,7 @@
 	      }
 	    }
 
-	    if (this.y === paddle.y - 6 && this.x > paddleLeft + 40 && this.x < paddleRight) {
+	    if (this.y === paddle.y - 8 && this.x > paddleLeft + 40 && this.x < paddleRight) {
 	      if (this.moveX < 4 || this.moveX > -4) {
 	        if (this.moveX < 0) {
 	          this.moveX = this.moveX * .7;
@@ -584,7 +587,7 @@
 	      }
 	    }
 
-	    if (this.y === paddle.y - 6 && this.x > paddleLeft + 10 && this.x < paddleLeft + 20) {
+	    if (this.y === paddle.y - 8 && this.x > paddleLeft + 10 && this.x < paddleLeft + 20) {
 	      if (this.moveX < 4 || this.moveX > -4) {
 	        if (this.moveX > 0) {
 	          this.moveX = this.moveX * .9;
@@ -594,7 +597,7 @@
 	      }
 	    }
 
-	    if (this.y === paddle.y - 6 && this.x > paddleLeft && this.x < paddleLeft + 10) {
+	    if (this.y === paddle.y - 8 && this.x > paddleLeft && this.x < paddleLeft + 10) {
 	      if (this.moveX < 4 || this.moveX > -4) {
 	        if (this.moveX > 0) {
 	          this.moveX = this.moveX * .7;
