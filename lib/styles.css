@@ -19,6 +19,54 @@ body {
   background-color: rgba(0, 0, 0, .5);
   border-radius: 4px;
 }
+/*==========GAME INSTRUCTIONS AND START==========*/
+#directions-modal {
+  width: 35%;
+  position: absolute;
+  top: 4%;
+  left: 32.5%;
+  background-color: rgba(240, 240, 237, .85);
+  border-radius: 4px;
+  padding: 20px;
+}
+
+.space-blox {
+  margin-top: 0;
+  text-align: center;
+}
+
+.directions-text {
+  padding: 12px 0;
+}
+
+ul {
+  width: 95%;
+  padding-left: 10%;
+}
+
+.directions-li {
+  padding: 5px;
+  list-style: square;
+}
+#begin-btn {
+  display: block;
+  padding: 8px 16px;
+  margin: 0 auto;
+  margin-top: 3%;
+  width: 50%;
+  background: #FF6633;
+  border-radius: 4px;
+  box-shadow: rgba(0,0,0,1) 0 1px 0;
+  text-shadow: rgba(0,0,0,.4) 0 1px 0;
+  color: #F0F0ED;
+  font-size: 15px;
+  text-decoration: none;
+  text-align: center;
+  border: none;
+}
+
+}
+
 
 /*==========START GAME BUTTON==========*/
 #start-container {
