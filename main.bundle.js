@@ -107,8 +107,9 @@
 	});
 
 	var newLifeButton = document.createElement('section');
-	var livesCounterOnDom = document.createElement('aside');
+	var livesLeftInfoBar = document.getElementById('lives-left');
 	var levelUpModal = document.createElement('article');
+	var currentLevelInfoBar = document.getElementById('current-level');
 
 	class Game {
 	  constructor() {
@@ -151,8 +152,7 @@
 	      alert('Game Over');
 	      location.reload();
 	    } else {
-	      document.body.appendChild(livesCounterOnDom);
-	      livesCounterOnDom.innerHTML = `Lives Left: ${this.livesRemaining}`;
+	      livesLeftInfoBar.innerHTML = `Lives Left: ${this.livesRemaining}`;
 	    }
 	  }
 
@@ -170,6 +170,7 @@
 	            <p class="level-up-text">On to the next challenge! Click the button to start level ${this.currentLevel + 1}.</p>
 	            <button id="continue-to-next-level">Continue</button>
 	        </div>`;
+	      currentLevelInfoBar.innerHTML = `Current Level: ${this.currentLevel + 1}`;
 	      ball.resetBall();
 	      this.currentLevel = 2;
 	      this.continueToLevelTwo();
@@ -181,6 +182,7 @@
 	            <p class="level-up-text">On to the next challenge! Click the button to start level ${this.currentLevel + 1}.</p>
 	            <button id="continue-to-next-level">Continue</button>
 	        </div>`;
+	      currentLevelInfoBar.innerHTML = `Current Level: ${this.currentLevel + 1}`;
 	      ball.resetBall();
 	      this.currentLevel = 3;
 	      this.continueToLevelThree();
@@ -193,6 +195,7 @@
 	            <p class="level-up-text">On to the next challenge! Click the button to start level ${this.currentLevel + 1}.</p>
 	            <button id="continue-to-next-level">Continue</button>
 	        </div>`;
+	      currentLevelInfoBar.innerHTML = `Current Level: ${this.currentLevel + 1}`;
 	      ball.resetBall();
 	      this.currentLevel = 4;
 	      this.continueToLevelFour();
@@ -240,9 +243,9 @@
 	var startButton = document.getElementById('start-btn');
 
 	startButton.addEventListener('click', function () {
+	  var directionsModal = document.getElementById('directions-modal');
 	  game.startGame(gameLoop);
-	  startButton.disabled = true;
-	  startButton.style.backgroundColor = '#b4b4b4';
+	  directionsModal.remove();
 	});
 
 	canvas.addEventListener('click', function () {

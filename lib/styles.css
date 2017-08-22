@@ -23,7 +23,7 @@ body {
 #directions-modal {
   width: 35%;
   position: absolute;
-  top: 4%;
+  top: 5%;
   left: 32.5%;
   background-color: rgba(240, 240, 237, .85);
   border-radius: 4px;
@@ -33,10 +33,12 @@ body {
 .space-blox {
   margin-top: 0;
   text-align: center;
+  font-size: 24px;
 }
 
 .directions-text {
   padding: 12px 0;
+  font-size: 14px;
 }
 
 ul {
@@ -47,6 +49,7 @@ ul {
 .directions-li {
   padding: 5px;
   list-style: square;
+  font-size: 14px;
 }
 
 #start-btn {
@@ -59,7 +62,7 @@ ul {
   border-radius: 4px;
   text-shadow: rgba(0,0,0,.4) 0 1px 0;
   color: #F0F0ED;
-  font-size: 15px;
+  font-size: 17px;
   text-decoration: none;
   text-align: center;
   border: none;
@@ -72,10 +75,10 @@ ul {
 /*==========INFO BAR==========*/
 
 #info-bar {
-  width: 31%;
+  width: 500px;
   margin-bottom: 5%;
-  margin-top: 26%;
-  margin-left: -5.5%;
+  margin-top: 33%;
+  margin-left: -10%;
   display: flex;
   flex-direction: row;
   justify-content: center;
