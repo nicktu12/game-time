@@ -12,7 +12,7 @@ describe('paddle unit testing', () => {
     let paddleX = paddle.x;
     assert.equal(paddleX === 225, true);
     paddle.moveRight();
-    assert.equal(paddle.x === paddleX + 10, true)
+    assert.equal(paddle.x === paddleX + 10, true);
   })
 
   it('should move left', () => {
@@ -20,7 +20,7 @@ describe('paddle unit testing', () => {
     let paddleX = paddle.x;
     assert.equal(paddleX === 225, true);
     paddle.moveLeft();
-    assert.equal(paddle.x === paddleX - 10, true)
+    assert.equal(paddle.x === paddleX - 10, true);
   })
 
   it('should not be able to go off the right side of the canvas', () => {

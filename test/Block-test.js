@@ -36,11 +36,6 @@ describe('block unit testing', function () {
     var blockArray = block.buildArray();
 
     block.breakblock(blockArray, ball);
-
-
-
-    console.log('hiii');
-
     assert.equal(1, 1)
   })
 
