@@ -12,9 +12,9 @@ describe('ball unit testing', function() {
 
   it('should have a fixed diameter', function() {
     var ball = new Ball();
-    
-    assert.equal(ball.width, 8);
-    assert.equal(ball.height, 8);
+
+    assert.equal(ball.width, 6);
+    assert.equal(ball.height, 6);
   })
 
   it('should not have a speed initially', function() {
@@ -64,7 +64,7 @@ describe('ball unit testing', function() {
 
     ball.initiateVelocity();
     assert.equal(ball.moveY === -2, true);
-    ball.y = paddle.y - 8;
+    ball.y = paddle.y - 6;
     ball.x = paddle.x + 25;
     ball.bouncePaddleY(paddle);
     assert.equal(ball.moveY >= 2, true);
@@ -76,7 +76,7 @@ describe('ball unit testing', function() {
 
     ball.initiateVelocity();
     assert.equal(ball.moveX === 2, true);
-    ball.y = paddle.y - 8;
+    ball.y = paddle.y - 6;
     ball.x = paddle.x + 31;
     ball.bouncePaddleModulation(paddle);
     assert.equal(ball.moveX > 2, true);
@@ -95,13 +95,19 @@ describe('ball unit testing', function() {
     ball.initiateVelocity();
     assert.equal(ball.moveY < 0, true);
     ball.x = 11;
-    ball.y = 28;
+    ball.y = 26;
     block.breakBlock(array, ball);
     assert.equal(ball.moveY > 0, true);
   })
 
-  it.skip('stop when leveled up', () => {
+  it('should set velocity to 0 when leveled up', () => {
+    var ball = new Ball(300, 300);
+    var paddle = new Paddle(225, 476);
 
+    ball.initiateVelocity();
+    assert.equal(ball.moveY === 0, false);
+    ball.resetBall();
+    assert.equal(ball.moveY === 0, true);
   })
 
   it('break bricks on collision', () => {
@@ -112,7 +118,7 @@ describe('ball unit testing', function() {
     ball.initiateVelocity();
     assert.equal(array.length, 1);
     ball.x = 11;
-    ball.y = 28;
+    ball.y = 26;
     block.breakBlock(array, ball);
     assert.equal(array.length, 0);
   })
