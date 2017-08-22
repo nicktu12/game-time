@@ -1,31 +1,31 @@
-var { assert, expect, should } = require('chai');
+const { assert } = require('chai');
 
-var Ball = require('../lib/Ball.js');
-var Paddle = require('../lib/Paddle.js');
-var Block = require('../lib/Block.js')
+const Ball = require('../lib/Ball.js');
+const Paddle = require('../lib/Paddle.js');
+const Block = require('../lib/Block.js')
 
 
-describe('ball unit testing', function() {
-  it('should be a function', function() {
-    var ball = new Ball();
+describe('ball unit testing', () => {
+  it('should be a function', () => {
+    let ball = new Ball();
   })
 
-  it('should have a fixed diameter', function() {
-    var ball = new Ball();
+  it('should have a fixed diameter', () => {
+    let ball = new Ball();
 
     assert.equal(ball.width, 6);
     assert.equal(ball.height, 6);
   })
 
-  it('should not have a speed initially', function() {
-    var ball = new Ball();
+  it('should not have a speed initially', () => {
+    let ball = new Ball();
 
     assert.equal(ball.moveX === 0, true);
     assert.equal(ball.moveY === 0, true);
   })
 
   it('should start moving', () => {
-    var ball = new Ball();
+    let ball = new Ball();
 
     assert.equal(ball.moveX === 0, true);
     assert.equal(ball.moveY === 0, true);
@@ -34,24 +34,24 @@ describe('ball unit testing', function() {
     assert.equal(ball.moveY !== 0, true);
   })
 
-  it('should bounce off the right wall', function() {
-    var ball = new Ball(496);
+  it('should bounce off the right wall', () => {
+    let ball = new Ball(496);
 
     assert.equal(ball.moveX >= 0, true)
     ball.bounceWalls();
     assert.equal(ball.moveX <= 0, true);
   })
 
-  it('should bounce off the left wall', function() {
-    var ball = new Ball(4);
+  it('should bounce off the left wall', () => {
+    let ball = new Ball(4);
 
     assert.equal(ball.moveX <= 0, true)
     ball.bounceWalls();
     assert.equal(ball.moveX >= 0, true);
   })
 
-  it('should bounce off the ceiling', function() {
-    var ball = new Ball(this.x, 4);
+  it('should bounce off the ceiling', () => {
+    let ball = new Ball(this.x, 4);
 
     assert.equal(ball.moveY <= 0, true)
     ball.bounceWalls();
@@ -59,8 +59,8 @@ describe('ball unit testing', function() {
   })
 
   it('should speed up vertically when it bounces off paddle', () => {
-    var ball = new Ball(100, 100);
-    var paddle = new Paddle(225, 476);
+    let ball = new Ball(100, 100);
+    let paddle = new Paddle(225, 476);
 
     ball.initiateVelocity();
     assert.equal(ball.moveY === -2, true);
@@ -71,8 +71,8 @@ describe('ball unit testing', function() {
   })
 
   it('should change angle when bounce of sides of paddle', () => {
-    var ball = new Ball(100, 100);
-    var paddle = new Paddle(225, 476);
+    let ball = new Ball(100, 100);
+    let paddle = new Paddle(225, 476);
 
     ball.initiateVelocity();
     assert.equal(ball.moveX === 2, true);
@@ -88,9 +88,9 @@ describe('ball unit testing', function() {
   })
 
   it('should bounce off bricks', () => {
-    var ball = new Ball(300, 300);
-    var block = new Block(10, 10);
-    var array = [block];
+    let ball = new Ball(300, 300);
+    let block = new Block(10, 10);
+    let array = [block];
 
     ball.initiateVelocity();
     assert.equal(ball.moveY < 0, true);
@@ -101,7 +101,7 @@ describe('ball unit testing', function() {
   })
 
   it('should set velocity to 0 when leveled up', () => {
-    var ball = new Ball(300, 300);
+    let ball = new Ball(300, 300);
 
     ball.initiateVelocity();
     assert.equal(ball.moveY === 0, false);
@@ -110,9 +110,9 @@ describe('ball unit testing', function() {
   })
 
   it('break bricks on collision', () => {
-    var ball = new Ball(300, 300);
-    var block = new Block(10, 10);
-    var array = [block];
+    let ball = new Ball(300, 300);
+    let block = new Block(10, 10);
+    let array = [block];
 
     ball.initiateVelocity();
     assert.equal(array.length, 1);
