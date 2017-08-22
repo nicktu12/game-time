@@ -6,11 +6,11 @@ var Ball = require('../lib/Ball.js');
 
 describe('block unit testing', function () {
   it('should be a function', function () {
-    var block = new block();
+    var block = new Block();
   })
 
   it('should have a fixed width and height', function () {
-    var block = new block();
+    var block = new Block();
 
     assert.equal(block.height === 10, true);
     assert.equal(block.width === 50, true);
