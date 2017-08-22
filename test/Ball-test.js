@@ -102,7 +102,6 @@ describe('ball unit testing', function() {
 
   it('should set velocity to 0 when leveled up', () => {
     var ball = new Ball(300, 300);
-    var paddle = new Paddle(225, 476);
 
     ball.initiateVelocity();
     assert.equal(ball.moveY === 0, false);
