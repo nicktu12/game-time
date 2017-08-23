@@ -45,25 +45,52 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	const Game = __webpack_require__(1);
+	// const Ball = require('./Ball.js');
+	// const Paddle = require('./Paddle.js');
+	//
+	// const canvas = document.getElementById('canvas');
+	// const context = canvas.getContext('2d');
+	//
+	// //var block = new Block();
+	// var paddle = new Paddle(225, 476);
+	// //var powerup = new Powerup(300, 0);
+	// var ball = new Ball(paddle.x + 35, paddle.y - 6);
+	//
+	// const game = new Game();
+	//
+	// const startButton = document.getElementById('start-btn');
+	//
+	// startButton.addEventListener('click', function() {
+	//   let directionsModal = document.getElementById('directions-modal');
+	//
+	//   game.startGame(gameLoop);
+	//   directionsModal.remove();
+	// });
 
 /***/ }),
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	const Block = __webpack_require__(2);
-	const Paddle = __webpack_require__(4);
-	const Ball = __webpack_require__(5);
+	const Paddle = __webpack_require__(5);
+	const Ball = __webpack_require__(6);
 	const Powerup = __webpack_require__(3);
 
 	const canvas = document.getElementById('canvas');
 	const context = canvas.getContext('2d');
 
-	var block = new Block();
-	var paddle = new Paddle(225, 476);
-	var powerup = new Powerup(300, 0);
-	var ball = new Ball(paddle.x + 35, paddle.y - 6);
+	const block = new Block();
+	const paddle = new Paddle(225, 476);
+	const powerup = new Powerup(300, 0);
+	const ball = new Ball(paddle.x + 35, paddle.y - 6);
 
-	var buildAnArray = block.buildLevelOne();
+	const newLifeButton = document.createElement('section');
+	const livesLeftInfoBar = document.getElementById('lives-left');
+	const levelUpModal = document.createElement('article');
+	const currentLevelInfoBar = document.getElementById('current-level');
+	const startButton = document.getElementById('start-btn');
+
+	let buildAnArray = block.buildLevelOne();
 
 	function gameLoop() {
 	  context.clearRect(0, 0, canvas.width, canvas.height);
@@ -81,32 +108,40 @@
 	  requestAnimationFrame(gameLoop);
 	}
 
-	document.addEventListener('keydown', function (e) {
+	document.addEventListener('keydown', keyHandler);
+
+	function keyHandler(e) {
 	  if (e.keyCode === 39) {
 	    paddle.moveRight();
 	  } else if (e.keyCode === 37) {
 	    paddle.moveLeft();
+	  } else if (e.keyCode === 65) {
+	    cheatCode();
 	  }
-	});
+	}
 
-	document.addEventListener('keydown', function (e) {
-	  if (e.keyCode === 65) {
-	    for (let i = 0; i < buildAnArray.length; i++) {
-	      if (buildAnArray[i].unbreakable === false) {
-	        buildAnArray.splice(i, 1);
-	      }
+	function cheatCode() {
+	  for (let i = 0; i < buildAnArray.length; i++) {
+	    if (buildAnArray[i].unbreakable === false) {
+	      buildAnArray.splice(i, 1);
 	    }
 	  }
-	});
+	}
 
 	canvas.addEventListener('mousemove', function (e) {
 	  paddle.cursorHandler(e);
 	});
 
-	const newLifeButton = document.createElement('section');
-	const livesLeftInfoBar = document.getElementById('lives-left');
-	const levelUpModal = document.createElement('article');
-	const currentLevelInfoBar = document.getElementById('current-level');
+	canvas.addEventListener('click', function () {
+	  ball.initiateVelocity();
+	});
+
+	startButton.addEventListener('click', function () {
+	  let directionsModal = document.getElementById('directions-modal');
+
+	  game.startGame(gameLoop);
+	  directionsModal.remove();
+	});
 
 	class Game {
 
@@ -123,7 +158,7 @@
 	    if (ball.y - 12 >= canvas.height) {
 	      ball.resetBall();
 	      this.livesRemaining--;
-	      this.lives();
+	      this.livesCounter();
 	      document.body.appendChild(newLifeButton);
 	      newLifeButton.innerHTML = `
 	        <div id="lostLifeModal">
@@ -146,7 +181,7 @@
 	    });
 	  }
 
-	  lives() {
+	  livesCounter() {
 	    if (this.livesRemaining === 0) {
 	      alert('Game Over');
 	      location.reload();
@@ -156,51 +191,44 @@
 	  }
 
 	  levelUpAlert() {
+	    let levelUpAppend = `<div id="levelUpModal">
+	        <h2 class="level-up">NICE!</h2>
+	        <p class="level-up-text">On to the next challenge! Click the button to start level ${this.currentLevel + 1}.</p>
+	        <button id="continue-to-next-level">Continue</button>
+	        </div>`;
+
+	    let wonGameAppend = `
+	      <div id="level-up-modal">
+	          <h2 class="level-up">YOU WON!!!</h2>
+	          <p class="level-up-text">We didn't think this was possible.</p>
+	          <button id="play-again">Play Again</button>
+	      </div>`;
+
 	    if (this.currentLevel === 1 && buildAnArray.length === 0) {
 	      this.currentLevel = 2;
 	      document.body.appendChild(levelUpModal);
-	      levelUpModal.innerHTML = `
-	        <div id="levelUpModal">
-	            <h2 class="level-up">NICE!</h2>
-	            <p class="level-up-text">On to the next challenge! Click the button to start level ${this.currentLevel}.</p>
-	            <button id="continue-to-next-level">Continue</button>
-	        </div>`;
+	      levelUpModal.innerHTML = levelUpAppend;
 	      currentLevelInfoBar.innerHTML = `Current Level: ${this.currentLevel}`;
 	      ball.resetBall();
 	      this.continueToLevelTwo();
 	    } else if (this.currentLevel === 2 && buildAnArray.length === 2) {
 	      this.currentLevel = 3;
 	      document.body.appendChild(levelUpModal);
-	      levelUpModal.innerHTML = `
-	        <div id="levelUpModal">
-	            <h2 class="level-up">NICE!</h2>
-	            <p class="level-up-text">On to the next challenge! Click the button to start level ${this.currentLevel}.</p>
-	            <button id="continue-to-next-level">Continue</button>
-	        </div>`;
+	      levelUpModal.innerHTML = levelUpAppend;
 	      currentLevelInfoBar.innerHTML = `Current Level: ${this.currentLevel}`;
 	      ball.resetBall();
 	      this.continueToLevelThree();
 	    } else if (this.currentLevel === 3 && buildAnArray.length === 0) {
 	      this.currentLevel = 4;
 	      document.body.appendChild(levelUpModal);
-	      levelUpModal.innerHTML = `
-	        <div id="levelUpModal">
-	            <h2 class="level-up">NICE!</h2>
-	            <p class="level-up-text">On to the next challenge! Click the button to start level ${this.currentLevel}.</p>
-	            <button id="continue-to-next-level">Continue</button>
-	        </div>`;
+	      levelUpModal.innerHTML = levelUpAppend;
 	      currentLevelInfoBar.innerHTML = `Current Level: ${this.currentLevel}`;
 	      ball.resetBall();
 	      this.continueToLevelFour();
 	    } else if (this.currentLevel === 4 && buildAnArray.length === 7) {
 	      this.currentLevel = 1;
 	      document.body.appendChild(levelUpModal);
-	      levelUpModal.innerHTML = `
-	        <div id="level-up-modal">
-	            <h2 class="level-up">YOU WON!!!</h2>
-	            <p class="level-up-text">We didn't think this was possible.</p>
-	            <button id="play-again">Play Again</button>
-	        </div>`;
+	      levelUpModal.innerHTML = wonGameAppend;
 	      ball.resetBall();
 	      currentLevelInfoBar.innerHTML = `Current Level: 1`;
 	      this.gameWon();
@@ -246,26 +274,8 @@
 	}
 
 	const game = new Game();
-	const startButton = document.getElementById('start-btn');
 
-	startButton.addEventListener('click', function () {
-	  let directionsModal = document.getElementById('directions-modal');
-
-	  game.startGame(gameLoop);
-	  directionsModal.remove();
-	});
-
-	canvas.addEventListener('click', function () {
-	  ball.initiateVelocity();
-	});
-
-	document.addEventListener('keydown', function (e) {
-	  if (e.keyCode === 32) {
-	    ball.initiateVelocity();
-	  }
-	});
-
-	game.lives();
+	game.livesCounter();
 
 	module.exports = Game;
 
@@ -274,12 +284,12 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	const Powerup = __webpack_require__(3);
+	const GamePiece = __webpack_require__(4);
 
-	class Block {
+	class Block extends GamePiece {
 
 	  constructor(x, y, special = false, unbreakable = false) {
-	    this.x = x;
-	    this.y = y;
+	    super(x, y);
 	    this.width = 50;
 	    this.height = 10;
 	    this.status = 1;
@@ -463,12 +473,15 @@
 
 /***/ }),
 /* 3 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-	class Powerup {
+	const GamePiece = __webpack_require__(4);
+
+	class Powerup extends GamePiece {
 
 	  constructor(x, y) {
-	    this.x = x, this.y = y, this.moveY = 1.3;
+	    super(x, y);
+	    this.moveY = 1.3;
 	  }
 
 	  draw(context) {
@@ -499,11 +512,26 @@
 /* 4 */
 /***/ (function(module, exports) {
 
-	class Paddle {
-
+	class GamePiece {
 	  constructor(x, y) {
 	    this.x = x;
 	    this.y = y;
+	  }
+
+	}
+
+	module.exports = GamePiece;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	const GamePiece = __webpack_require__(4);
+
+	class Paddle extends GamePiece {
+
+	  constructor(x, y) {
+	    super(x, y);
 	    this.width = 50;
 	    this.height = 12;
 	  }
@@ -549,10 +577,10 @@
 	module.exports = Paddle;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	const GamePiece = __webpack_require__(6);
+	const GamePiece = __webpack_require__(4);
 
 	class Ball extends GamePiece {
 
@@ -672,21 +700,6 @@
 	}
 
 	module.exports = Ball;
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports) {
-
-	
-	class GamePiece {
-	  constructor(x, y) {
-	    this.x = x;
-	    this.y = y;
-	  }
-
-	}
-
-	module.exports = GamePiece;
 
 /***/ })
 /******/ ]);

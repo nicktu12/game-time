@@ -8,6 +8,7 @@
 </head>
 <body>
   <main id="container">
+
     <section id="directions-modal">
         <h1 class="space-blox">Space Blox</h1>
         <p class="directions-text">The goal of the game is to break all the (breakable) blocks on the screen. Blocks can be broken by colliding with the ball. Some more things to know before you play:</p>
@@ -21,7 +22,15 @@
         <p class="directions-text">Think you're ready to play? Click the button below, then launch the ball with a spacebar or mouse click.</p>
         <button id="start-btn" type="button" name="button">Ready to Play</button>
       </section>
-    <canvas id="canvas" width="500" height="500"></canvas>
+
+      <aside class="canvas-container">
+        <canvas id="canvas" width="500" height="500"></canvas>
+      </aside>
+
+    </main>
+
+
+  <aside id="info-bar-container">
     <section id="info-bar">
       <aside id="current-level">
         <p>Current Level: 1</p>
@@ -31,7 +40,9 @@
         <p>Lives Left: </p>
       </aside>
     </section>
+  </aside>
+
     <script src="main.bundle.js"></script>
-  </main>
+
 </body>
 </html>
