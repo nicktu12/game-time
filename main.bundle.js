@@ -178,7 +178,7 @@
 	      document.body.appendChild(newLifeButton);
 	      newLifeButton.innerHTML = `
 	        <div id="lost-life-modal">
-	            <h2 class="lost-life">DEATH!</h2>
+	            <h2 class="lost-life" class="animate2 fadeIn">DEATH!</h2>
 	            <p class="lost-life-text">You are running low on lives - just ${this.livesRemaining} left!
 	            Click the button to continue on to your next life.</p>
 	            <button id="continue-to-next-life">Continue</button>
@@ -200,6 +200,7 @@
 
 	  livesCounter() {
 	    if (this.livesRemaining === 0) {
+	      //AMY FIX THIS!
 	      alert('Game Over');
 	      location.reload();
 	    } else {
@@ -231,7 +232,7 @@
 	  }
 
 	  levelUpDom() {
-	    let levelUpAppend = `<div id="level-up-modal">
+	    let levelUpAppend = `<div id="level-up-modal" class="animate2 fadeIn">
 	        <h2 class="level-up">NICE!</h2>
 	        <p class="level-up-text">On to the next challenge! Click the button to start level ${this.currentLevel}.</p>
 	        <button id="continue-to-next-level">Continue</button>
@@ -245,7 +246,7 @@
 
 	  gameWonDom() {
 	    let wonGameAppend = `
-	      <div id="you-won-modal">
+	      <div id="you-won-modal" class="animate2 fadeIn">
 	          <h2 class="level-up">YOU WON!!!</h2>
 	          <p class="you-won-text">We didn't think this was possible.</p>
 	          <button id="play-again">Play Again</button>
