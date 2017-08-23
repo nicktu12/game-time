@@ -85,6 +85,7 @@
 	const ball = new Ball(paddle.x + 35, paddle.y - 6);
 
 	const newLifeButton = document.createElement('section');
+	const infoBar = document.getElementById('info-bar');
 	const livesLeftInfoBar = document.getElementById('lives-left');
 	const levelUpModal = document.createElement('article');
 	const currentLevelInfoBar = document.getElementById('current-level');
@@ -138,9 +139,11 @@
 
 	startButton.addEventListener('click', function () {
 	  let directionsModal = document.getElementById('directions-modal');
-
+	  //canvas: inline-block and info bar: flex DISPLAY
 	  game.startGame(gameLoop);
 	  directionsModal.remove();
+	  canvas.style.display = 'inline-block';
+	  infoBar.style.display = 'flex';
 	});
 
 	class Game {
@@ -154,14 +157,27 @@
 	    requestAnimationFrame(gameLoop);
 	  }
 
+	  hideCanvasAndInfo() {
+	    canvas.style.display = 'none';
+	    infoBar.style.display = 'none';
+	    console.log('hide');
+	  }
+
+	  showCanvasAndInfo() {
+	    canvas.style.display = 'inline-block';
+	    infoBar.style.display = 'flex';
+	    console.log('show');
+	  }
+
 	  die(ball, canvas) {
 	    if (ball.y - 12 >= canvas.height) {
 	      ball.resetBall();
 	      this.livesRemaining--;
 	      this.livesCounter();
+	      this.hideCanvasAndInfo();
 	      document.body.appendChild(newLifeButton);
 	      newLifeButton.innerHTML = `
-	        <div id="lostLifeModal">
+	        <div id="lost-life-modal">
 	            <h2 class="lost-life">DEATH!</h2>
 	            <p class="lost-life-text">You are running low on lives - just ${this.livesRemaining} left!
 	            Click the button to continue on to your next life.</p>
@@ -178,6 +194,7 @@
 	      ball.moveX = 2;
 	      ball.moveY = -2;
 	      newLifeButton.remove();
+	      game.showCanvasAndInfo();
 	    });
 	  }
 
@@ -191,12 +208,42 @@
 	  }
 
 	  levelUpAlert() {
+	    if (this.currentLevel === 1 && buildAnArray.length === 0) {
+	      this.currentLevel = 2;
+	      game.levelUpDom();
+	      ball.resetBall();
+	      this.continueToLevelTwo();
+	    } else if (this.currentLevel === 2 && buildAnArray.length === 2) {
+	      this.currentLevel = 3;
+	      game.levelUpDom();
+	      ball.resetBall();
+	      this.continueToLevelThree();
+	    } else if (this.currentLevel === 3 && buildAnArray.length === 0) {
+	      this.currentLevel = 4;
+	      game.levelUpDom();
+	      ball.resetBall();
+	      this.continueToLevelFour();
+	    } else if (this.currentLevel === 4 && buildAnArray.length === 7) {
+	      this.currentLevel = 1;
+	      game.gameWonDom();
+	      this.gameWon();
+	    }
+	  }
+
+	  levelUpDom() {
 	    let levelUpAppend = `<div id="levelUpModal">
 	        <h2 class="level-up">NICE!</h2>
-	        <p class="level-up-text">On to the next challenge! Click the button to start level ${this.currentLevel + 1}.</p>
+	        <p class="level-up-text">On to the next challenge! Click the button to start level ${this.currentLevel}.</p>
 	        <button id="continue-to-next-level">Continue</button>
 	        </div>`;
 
+	    game.hideCanvasAndInfo();
+	    document.body.appendChild(levelUpModal);
+	    levelUpModal.innerHTML = levelUpAppend;
+	    currentLevelInfoBar.innerHTML = `Current Level: ${this.currentLevel}`;
+	  }
+
+	  gameWonDom() {
 	    let wonGameAppend = `
 	      <div id="level-up-modal">
 	          <h2 class="level-up">YOU WON!!!</h2>
@@ -204,35 +251,11 @@
 	          <button id="play-again">Play Again</button>
 	      </div>`;
 
-	    if (this.currentLevel === 1 && buildAnArray.length === 0) {
-	      this.currentLevel = 2;
-	      document.body.appendChild(levelUpModal);
-	      levelUpModal.innerHTML = levelUpAppend;
-	      currentLevelInfoBar.innerHTML = `Current Level: ${this.currentLevel}`;
-	      ball.resetBall();
-	      this.continueToLevelTwo();
-	    } else if (this.currentLevel === 2 && buildAnArray.length === 2) {
-	      this.currentLevel = 3;
-	      document.body.appendChild(levelUpModal);
-	      levelUpModal.innerHTML = levelUpAppend;
-	      currentLevelInfoBar.innerHTML = `Current Level: ${this.currentLevel}`;
-	      ball.resetBall();
-	      this.continueToLevelThree();
-	    } else if (this.currentLevel === 3 && buildAnArray.length === 0) {
-	      this.currentLevel = 4;
-	      document.body.appendChild(levelUpModal);
-	      levelUpModal.innerHTML = levelUpAppend;
-	      currentLevelInfoBar.innerHTML = `Current Level: ${this.currentLevel}`;
-	      ball.resetBall();
-	      this.continueToLevelFour();
-	    } else if (this.currentLevel === 4 && buildAnArray.length === 7) {
-	      this.currentLevel = 1;
-	      document.body.appendChild(levelUpModal);
-	      levelUpModal.innerHTML = wonGameAppend;
-	      ball.resetBall();
-	      currentLevelInfoBar.innerHTML = `Current Level: 1`;
-	      this.gameWon();
-	    }
+	    game.hideCanvasAndInfo();
+	    document.body.appendChild(levelUpModal);
+	    levelUpModal.innerHTML = wonGameAppend;
+	    ball.resetBall();
+	    currentLevelInfoBar.innerHTML = `Current Level: 1`;
 	  }
 
 	  continueToLevelTwo() {
@@ -241,6 +264,7 @@
 	    levelUpBtn.addEventListener('click', function () {
 	      buildAnArray = block.buildLevelTwo();
 	      levelUpModal.remove();
+	      game.showCanvasAndInfo();
 	    });
 	  }
 
@@ -250,6 +274,7 @@
 	    levelUpBtn.addEventListener('click', function () {
 	      buildAnArray = block.buildLevelThree();
 	      levelUpModal.remove();
+	      game.showCanvasAndInfo();
 	    });
 	  }
 
@@ -259,6 +284,7 @@
 	    levelUpBtn.addEventListener('click', function () {
 	      buildAnArray = block.buildLevelFour();
 	      levelUpModal.remove();
+	      game.showCanvasAndInfo();
 	    });
 	  }
 
@@ -268,6 +294,7 @@
 	    playAgainBtn.addEventListener('click', function () {
 	      buildAnArray = block.buildLevelOne();
 	      levelUpModal.remove();
+	      game.showCanvasAndInfo();
 	    });
 	  }
 

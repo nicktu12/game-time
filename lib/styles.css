@@ -132,8 +132,21 @@ article {
   margin-top: 60px;
 }
 
-#lostLifeModal,
-#levelUpModal {
+#level-up-modal {
+  height: 150px;
+}
+
+#lost-life-modal {
+  height: 170px;
+}
+
+#you-won-modal {
+  height: 130px;
+}
+
+#level-up-modal,
+#lost-life-modal,
+#you-won-modal {
   padding: 5px 5px 0 10px;
   display: flex;
   flex-direction: column;
@@ -149,25 +162,33 @@ article {
 
 .lost-life-text,
 .level-up-text {
-  padding: 10px 5px;
+  padding: 10px 5px 15px 5px;
   color: #1e1e1e;
 }
 
+.you-won-text {
+  padding: 10px 5px 15px 5px;
+  color: #1e1e1e;
+  text-align: center;
+}
+
+#continue-to-next-level,
 #continue-to-next-life,
-#continue-to-next-level {
+button {
   border: none;
   background-color: #FF6633;
   font-size: 16px;
   color: #F0F0ED;
   padding: 7px;
   align-content: center;
-  display: inline-block;
-  margin: 5% 25% 5% 25%;
   border-radius: 4px;
   outline: none;
+  margin: 0 auto;
+  display: block;
 }
 
 #continue-to-next-life:hover,
-#continue-to-next-level:hover {
+#continue-to-next-level:hover,
+button:hover {
   background: #BF4D26;
 }
