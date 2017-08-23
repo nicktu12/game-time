@@ -139,7 +139,7 @@
 
 	startButton.addEventListener('click', function () {
 	  let directionsModal = document.getElementById('directions-modal');
-	  //canvas: inline-block and info bar: flex DISPLAY
+
 	  game.startGame(gameLoop);
 	  directionsModal.remove();
 	  canvas.style.display = 'inline-block';
@@ -151,6 +151,7 @@
 	  constructor() {
 	    this.livesRemaining = 3;
 	    this.currentLevel = 1;
+	    this.points = 0;
 	  }
 
 	  startGame(gameLoop) {
@@ -160,13 +161,11 @@
 	  hideCanvasAndInfo() {
 	    canvas.style.display = 'none';
 	    infoBar.style.display = 'none';
-	    console.log('hide');
 	  }
 
 	  showCanvasAndInfo() {
 	    canvas.style.display = 'inline-block';
 	    infoBar.style.display = 'flex';
-	    console.log('show');
 	  }
 
 	  die(ball, canvas) {
@@ -176,14 +175,23 @@
 	      this.livesCounter();
 	      this.hideCanvasAndInfo();
 	      document.body.appendChild(newLifeButton);
-	      newLifeButton.innerHTML = `
-	        <div id="lost-life-modal">
-	            <h2 class="lost-life" class="animate2 fadeIn">DEATH!</h2>
-	            <p class="lost-life-text">You are running low on lives - just ${this.livesRemaining} left!
-	            Click the button to continue on to your next life.</p>
-	            <button id="continue-to-next-life">Continue</button>
+	      if (this.livesRemaining > 0) {
+	        newLifeButton.innerHTML = `
+	          <div id="lost-life-modal" class="animate2 fadeIn">
+	              <h2 class="lost-life">DEATH!</h2>
+	              <p class="lost-life-text">You are running low on lives - just ${this.livesRemaining} left!
+	              Click the button to continue on to your next life.</p>
+	              <button id="continue-to-next-life">Continue</button>
+	          </div>`;
+	        this.nextLife(ball);
+	      } else if (this.livesRemaining === 0) {
+	        newLifeButton.innerHTML = `
+	        <div id="lost-life-modal" class="animate2 fadeIn">
+	            <h2 class="lost-life">GAME OVER</h2>
+	            <p class="game-over-text">You are dead.</p>
+	            <button id="play-again">Play Again</button>
 	        </div>`;
-	      this.nextLife(ball);
+	      }
 	    }
 	  }
 
@@ -199,13 +207,9 @@
 	  }
 
 	  livesCounter() {
-	    if (this.livesRemaining === 0) {
-	      //AMY FIX THIS!
-	      alert('Game Over');
-	      location.reload();
-	    } else {
-	      livesLeftInfoBar.innerHTML = `Lives Left: ${this.livesRemaining}`;
-	    }
+	    // if (this.livesRemaining === 0) {
+	    livesLeftInfoBar.innerHTML = `Lives Left: ${this.livesRemaining}`;
+	    //}
 	  }
 
 	  levelUpAlert() {
@@ -481,7 +485,7 @@
 	    }
 	  }
 
-	  breakBlock(array, ball) {
+	  breakBlock(array, ball, game) {
 	    for (let i = 0; i < array.length; i++) {
 	      if (ball.y + 6 >= array[i].y && ball.y - 6 <= array[i].y + 10 && ball.x <= array[i].x + 50 && ball.x >= array[i].x) {
 	        ball.moveY = -ball.moveY;
@@ -492,6 +496,9 @@
 	          // this is where powerup shit happens
 	        }
 	        array.splice(i, 1);
+	        console.log('2points:', game.points);
+	        game.points++;
+	        console.log('3points:', game.points);
 	      }
 	    }
 	  }
