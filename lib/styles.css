@@ -30,6 +30,11 @@ main {
   border-radius: 4px;
 }
 
+.animate-canvas {
+  animation-duration: 3s;
+  animation-fill-mode: both;
+}
+
 /*==========GAME INSTRUCTIONS AND START==========*/
 
 #directions-modal {
@@ -183,6 +188,12 @@ article {
 .level-up-text {
   padding: 10px 5px 15px 5px;
   color: #1e1e1e;
+}
+
+.game-over-text {
+  padding: 10px 5px 15px 5px;
+  color: #1e1e1e;
+  text-align: center;
 }
 
 .you-won-text {
