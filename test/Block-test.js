@@ -18,14 +18,14 @@ describe('block unit testing', () => {
 
   it('should build an array', () => {
     let block = new Block();
-    let blockArray = block.buildArray();
+    let blockArray = block.buildLevelOne();
 
     assert.equal(Array.isArray(blockArray), true);
   })
 
-  it('should build an array of 24 block', () => {
+  it('should build an array of 24 blocks', () => {
     let block = new Block();
-    let blockArray = block.buildArray();
+    let blockArray = block.buildLevelTwo();
 
     assert.equal(blockArray.length, 24);
   })
@@ -33,10 +33,12 @@ describe('block unit testing', () => {
   it('should reverse direction of ball when colliding', () => {
     let block = new Block();
     let ball = new Ball();
-    let blockArray = block.buildArray();
+    let blockArray = block.buildLevelOne();
 
-    block.breakblock(blockArray, ball);
-    assert.equal(1, 1)
+    ball.initiateVelocity();
+    assert.equal(ball.moveY === -2, true);
+    block.breakBlock(blockArray, ball);
+    assert.equal(ball.moveY === -2, true);
   })
 
 })
