@@ -135,8 +135,9 @@ ul {
   font-size: 17px;
 }
 
-h2 {
+#points {
   color: #F0F0ED;
+  font-size: 17px;
 }
 
 #lives-left {
