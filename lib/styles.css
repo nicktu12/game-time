@@ -31,13 +31,34 @@ main {
 }
 
 /*==========GAME INSTRUCTIONS AND START==========*/
+
 #directions-modal {
   display: inline-block;
   margin-top: 50px;
   padding: 20px 30px;
   width: 600px;
-  background-color: rgba(240, 240, 237, .85);
+  background-color: rgba(240, 240, 237, 0.85);
   border-radius: 4px;
+  /*transition: 2s ease;*/
+}
+
+.animate {
+  animation-duration: 3s;
+  animation-fill-mode: both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.fadeIn {
+	animation-name: fadeIn;
 }
 
 .space-blox {
@@ -190,4 +211,9 @@ button {
 button:hover {
   background: #BF4D26;
   cursor: pointer;
+}
+
+.animate2 {
+  animation-duration: 1.5s;
+  animation-fill-mode: both;
 }
