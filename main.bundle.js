@@ -92,6 +92,7 @@
 	const startButton = document.getElementById('start-btn');
 
 	let buildAnArray = block.buildLevelOne();
+	let powerupArray = [];
 
 	function gameLoop() {
 	  context.clearRect(0, 0, canvas.width, canvas.height);
@@ -102,7 +103,7 @@
 	  ball.bouncePaddleY(paddle);
 	  ball.bouncePaddleModulation(paddle);
 	  block.buildBlock(buildAnArray, context);
-	  block.breakBlock(buildAnArray, ball);
+	  block.breakBlock(buildAnArray, ball, powerupArray);
 	  powerup.hitsPaddle(paddle, ball);
 	  game.die(ball, canvas);
 	  game.levelUpAlert();
@@ -481,7 +482,7 @@
 	    }
 	  }
 
-	  breakBlock(array, ball) {
+	  breakBlock(array, ball, powerupArray) {
 	    for (let i = 0; i < array.length; i++) {
 	      if (ball.y + 6 >= array[i].y && ball.y - 6 <= array[i].y + 10 && ball.x <= array[i].x + 50 && ball.x >= array[i].x) {
 	        ball.moveY = -ball.moveY;
@@ -489,7 +490,8 @@
 	          return;
 	        }
 	        if (array[i].special === true) {
-	          // this is where powerup shit happens
+	          console.log('works');
+	          powerupArray.push(new Powerup(ball.x, ball.y));
 	        }
 	        array.splice(i, 1);
 	      }
