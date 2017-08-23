@@ -9,25 +9,37 @@ body {
   background-image: url(assets/space.jpg);
   background-size: cover;
   background-repeat: no-repeat;
-  position: relative;
 }
 
+main {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.canvas-container {
+  display: flex;
+  justify-content: center;
+}
+
+/*THE REAL CODE*/
 #canvas {
-  margin: 0 auto;
-  margin-top: 50px;
-  display: block;
+  display: inline-block;
+  //margin-top: -375px;
+  margin-top: 30px;
   background-color: rgba(0, 0, 0, .5);
   border-radius: 4px;
+  display: none;
 }
 /*==========GAME INSTRUCTIONS AND START==========*/
 #directions-modal {
-  width: 35%;
-  position: absolute;
-  top: 5%;
-  left: 32.5%;
+  width: 600px;
   background-color: rgba(240, 240, 237, .85);
   border-radius: 4px;
   padding: 20px;
+  margin-top: 50px;
+  display: inline-block;
 }
 
 .space-blox {
@@ -74,19 +86,23 @@ ul {
 
 /*==========INFO BAR==========*/
 
+#info-bar-container {
+  display: block;
+  margin: 0 auto;
+  width: 500px;
+}
+
 #info-bar {
   width: 500px;
-  margin-bottom: 5%;
-  margin-top: 33%;
-  margin-left: -10%;
+  margin-bottom: 30px;
+  margin-top: 10px;
   display: flex;
   flex-direction: row;
-  justify-content: center;
   align-items: center;
   justify-content: space-between;
   padding: 8px;
   background-color: rgba(0, 0, 0, .65);
-
+  display: none;
 }
 
 #current-level {
@@ -108,12 +124,12 @@ h2 {
 /*===== SECTION (new life) & ARTICLE (level up) MODALS=====*/
 section,
 article {
-  width: 20%;
-  position: absolute;
-  top: 20%;
-  left: 40%;
+  width: 300px;
   background-color: rgba(240, 240, 237, .85);
   border-radius: 4px;
+  display: block;
+  margin: 0 auto;
+  margin-top: 60px;
 }
 
 #lostLifeModal,
