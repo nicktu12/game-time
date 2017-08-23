@@ -231,7 +231,7 @@
 	  }
 
 	  levelUpDom() {
-	    let levelUpAppend = `<div id="levelUpModal">
+	    let levelUpAppend = `<div id="level-up-modal">
 	        <h2 class="level-up">NICE!</h2>
 	        <p class="level-up-text">On to the next challenge! Click the button to start level ${this.currentLevel}.</p>
 	        <button id="continue-to-next-level">Continue</button>
@@ -245,9 +245,9 @@
 
 	  gameWonDom() {
 	    let wonGameAppend = `
-	      <div id="level-up-modal">
+	      <div id="you-won-modal">
 	          <h2 class="level-up">YOU WON!!!</h2>
-	          <p class="level-up-text">We didn't think this was possible.</p>
+	          <p class="you-won-text">We didn't think this was possible.</p>
 	          <button id="play-again">Play Again</button>
 	      </div>`;
 
