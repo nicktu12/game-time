@@ -177,10 +177,16 @@
 	    let playAgainBtn = document.getElementById('play-again');
 
 	    playAgainBtn.addEventListener('click', () => {
-	      game.points = 0;
 	      buildAnArray = block.buildLevelOne();
 	      gameOverModal.remove();
 	      game.showCanvasAndInfo();
+	      game.points = 0;
+	      block.updatePointsInfoBar(game);
+	      game.livesRemaining = 3;
+	      game.livesCounter();
+	      game.currentLevel = 1;
+	      currentLevelInfoBar.innerHTML = `Current Level: ${game.currentLevel}`;
+	      ball.resetBall();
 	    });
 	  }
 
@@ -191,6 +197,7 @@
 	      ball.resetBall();
 	      newLifeButton.remove();
 	      game.showCanvasAndInfo();
+	      paddle.resetPaddle();
 	    });
 	  }
 
@@ -210,7 +217,7 @@
 	      this.continueToLevelFour();
 	    } else if (this.currentLevel === 4 && buildAnArray.length === 7) {
 	      this.currentLevel = 1;
-	      this.gameWonDom();
+	      this.gameWonDom(ball);
 	      this.gameWon();
 	    }
 	  }
@@ -220,6 +227,7 @@
 	    this.levelUpDom();
 	    ball.resetBall();
 	    paddle.resetPaddle();
+	    document.getElementById('level-up').play();
 	  }
 
 	  levelUpDom() {
@@ -272,10 +280,16 @@
 	      buildAnArray = block.buildLevelOne();
 	      levelUpModal.remove();
 	      game.showCanvasAndInfo();
+	      game.points = 0;
+	      block.updatePointsInfoBar(game);
+	      game.livesRemaining = 3;
+	      game.livesCounter();
+	      game.currentLevel = 1;
+	      currentLevelInfoBar.innerHTML = `Current Level: ${game.currentLevel}`;
 	    });
 	  }
 
-	  gameWonDom() {
+	  gameWonDom(ball) {
 	    let wonGameAppend = `
 	      <div id="you-won-modal" class="animate2 fadeIn">
 	          <h2 class="level-up">YOU WON!!!</h2>
@@ -287,7 +301,6 @@
 	    document.body.appendChild(levelUpModal);
 	    levelUpModal.innerHTML = wonGameAppend;
 	    ball.resetBall();
-	    currentLevelInfoBar.innerHTML = `Current Level: 1`;
 	  }
 
 	}
@@ -502,17 +515,19 @@
 	        if (array[i].unbreakable === false) {
 	          game.points += 10;
 	          this.updatePointsInfoBar(game);
-	          // comment out 184, 185 for Ball-test.js and Block-test.js
+	          document.getElementById('normal-bounce-sound').volume = .2;
+	          document.getElementById('normal-bounce-sound').play();
 	        } else {
-	          // audioUnbreakable.play();
+	          document.getElementById('unbreakable-bounce-sound').volume = .2;
+	          document.getElementById('unbreakable-bounce-sound').play();
 	          return;
 	        }
 	        if (array[i].special === true) {
-	          powerupArray.push(new Powerup(ball.x, ball.y));
+	          powerupArray.push(new Powerup(array[i].x + 5, array[i].y));
 	          game.points += 15;
 	          this.updatePointsInfoBar(game);
-
-	          // audioSpecial.play();
+	          document.getElementById('special-bounce-sound').volume = .8;
+	          document.getElementById('special-bounce-sound').play();
 	        }
 	        array.splice(i, 1);
 	      }
@@ -543,9 +558,14 @@
 	  }
 
 	  draw(context) {
-	    context.fillStyle = 'yellow';
-	    context.fillRect(this.x, this.y, 5, 5);
+	    context.fillStyle = '#00FFFF';
+	    context.fillRect(this.x, this.y, 40, 10);
 	    this.y += this.moveY;
+	    context.font = "10px Ubuntu";
+	    context.textAlign = "center";
+	    context.textBaseline = "middle";
+	    context.fillStyle = "#FF6600";
+	    context.fillText("P", this.x, this.y);
 	  }
 
 	  hitsPaddle(paddle, ball, array) {
@@ -554,6 +574,7 @@
 	        array[i].y = -10;
 	        array[i].moveY = 0;
 	        this.chooseRandomPowerup(ball, paddle);
+	        document.getElementById('powerup-paddle').play();
 	      }
 	    }
 	  }
@@ -569,10 +590,10 @@
 
 	    if (rollDice <= .25) {
 	      console.log('slow');
-	      return paddle.longPaddle();
+	      return ball.slowBall();
 	    } else if (rollDice > .25 && rollDice <= .5) {
 	      console.log('fast');
-	      return paddle.shortPaddle();
+	      return ball.fastBall();
 	    } else if (rollDice > .5 && rollDice <= .75) {
 	      console.log('long');
 	      return paddle.longPaddle();
@@ -715,6 +736,7 @@
 	    } else if (this.y - 6 <= 0) {
 	      this.moveY = -this.moveY;
 	    }
+	    document.getElementById('wall-bounce').play();
 	  }
 
 	  bouncePaddleY(paddle) {
@@ -722,7 +744,6 @@
 	    let paddleLeft = paddle.x;
 
 	    if (this.y === paddle.y - 6 && this.x + 6 > paddleLeft && this.x - 6 < paddleRight) {
-	      console.log('hit');
 	      if (this.moveY > 4 || this.moveY < -4) {
 	        this.moveY = -this.moveY;
 	      } else {
