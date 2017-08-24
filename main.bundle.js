@@ -227,6 +227,7 @@
 	    this.levelUpDom();
 	    ball.resetBall();
 	    paddle.resetPaddle();
+	    document.getElementById('level-up').play();
 	  }
 
 	  levelUpDom() {
@@ -514,17 +515,19 @@
 	        if (array[i].unbreakable === false) {
 	          game.points += 10;
 	          this.updatePointsInfoBar(game);
-	          // comment out 184, 185 for Ball-test.js and Block-test.js
+	          document.getElementById('normal-bounce-sound').volume = .2;
+	          document.getElementById('normal-bounce-sound').play();
 	        } else {
-	          // audioUnbreakable.play();
+	          document.getElementById('unbreakable-bounce-sound').volume = .2;
+	          document.getElementById('unbreakable-bounce-sound').play();
 	          return;
 	        }
 	        if (array[i].special === true) {
 	          powerupArray.push(new Powerup(array[i].x + 5, array[i].y));
 	          game.points += 15;
 	          this.updatePointsInfoBar(game);
-
-	          // audioSpecial.play();
+	          document.getElementById('special-bounce-sound').volume = .8;
+	          document.getElementById('special-bounce-sound').play();
 	        }
 	        array.splice(i, 1);
 	      }
@@ -571,6 +574,7 @@
 	        array[i].y = -10;
 	        array[i].moveY = 0;
 	        this.chooseRandomPowerup(ball, paddle);
+	        document.getElementById('powerup-paddle').play();
 	      }
 	    }
 	  }
@@ -732,6 +736,7 @@
 	    } else if (this.y - 6 <= 0) {
 	      this.moveY = -this.moveY;
 	    }
+	    document.getElementById('wall-bounce').play();
 	  }
 
 	  bouncePaddleY(paddle) {
