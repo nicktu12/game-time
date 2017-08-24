@@ -44,7 +44,7 @@
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	const Game = __webpack_require__(1);
+	__webpack_require__(1);
 
 /***/ }),
 /* 1 */
@@ -58,11 +58,6 @@
 	const canvas = document.getElementById('canvas');
 	const context = canvas.getContext('2d');
 
-	const block = new Block();
-	const paddle = new Paddle(225, 476);
-	const powerup = new Powerup();
-	const ball = new Ball(paddle.x + 35, paddle.y - 6);
-
 	const newLifeButton = document.createElement('section');
 	const infoBar = document.getElementById('info-bar');
 	const livesLeftInfoBar = document.getElementById('lives-left');
@@ -70,7 +65,10 @@
 	const levelUpModal = document.createElement('article');
 	const startButton = document.getElementById('start-btn');
 
-	let playAgainBtn = document.getElementById('play-again');
+	const block = new Block();
+	const paddle = new Paddle(225, 476);
+	const ball = new Ball(paddle.x + 35, paddle.y - 6);
+	const powerup = new Powerup();
 
 	let buildAnArray = block.buildLevelOne();
 	let powerupArray = [];
@@ -95,15 +93,15 @@
 	  }
 	}
 
-	canvas.addEventListener('mousemove', function (e) {
+	canvas.addEventListener('mousemove', e => {
 	  paddle.cursorHandler(e);
 	});
 
-	canvas.addEventListener('click', function () {
+	canvas.addEventListener('click', () => {
 	  ball.initiateVelocity();
 	});
 
-	startButton.addEventListener('click', function () {
+	startButton.addEventListener('click', () => {
 	  let directionsModal = document.getElementById('directions-modal');
 
 	  game.startGame(gameLoop);
@@ -146,7 +144,7 @@
 	    }
 	  }
 
-	  loseOneLife(ball, canvas) {
+	  loseOneLife(ball) {
 	    ball.resetBall();
 	    this.livesRemaining--;
 	    this.livesCounter();
@@ -195,7 +193,7 @@
 	  nextLife(ball) {
 	    let continueToNewLife = document.getElementById('continue-to-next-life');
 
-	    continueToNewLife.addEventListener('click', function () {
+	    continueToNewLife.addEventListener('click', () => {
 	      ball.resetBall();
 	      newLifeButton.remove();
 	      game.showCanvasAndInfo();
@@ -279,7 +277,7 @@
 	  gameWon() {
 	    let playAgainBtn = document.getElementById('play-again');
 
-	    document.getElementById('win-sound').volume = .5;
+	    document.getElementById('win-sound').volume = 0.5;
 	    document.getElementById('win-sound').play();
 	    playAgainBtn.addEventListener('click', function () {
 	      buildAnArray = block.buildLevelOne();
@@ -321,8 +319,9 @@
 	  ball.bouncePaddleModulation(paddle);
 	  block.buildBlock(buildAnArray, context);
 	  block.breakBlock(buildAnArray, ball, game, powerupArray);
-	  powerup.hitsPaddle(paddle, ball, powerupArray, game, block);
+	  powerup.hitsPaddle(paddle, ball, powerupArray, game, block, context);
 	  powerup.dropPowerup(powerupArray, context);
+	  powerup.drawPowerupText(context);
 	  game.missPaddle(ball, canvas);
 	  game.levelUpAlert();
 	  requestAnimationFrame(gameLoop);
@@ -345,37 +344,36 @@
 	    super(x, y);
 	    this.width = 50;
 	    this.height = 10;
-	    this.status = 1;
 	    this.special = special;
 	    this.unbreakable = unbreakable;
 	  }
 
 	  draw(context) {
 	    if (this.special === true) {
-	      context.fillStyle = '#99FF66';
+	      context.fillStyle = '#99ff66';
 	      context.fillRect(this.x, this.y, this.width, this.height);
-	      this.trapezoid(context, this.x, this.y, this.x + 2, this.y + 2, this.x + 2, this.y + 8, this.x, this.y + 10, '#84E155');
-	      this.trapezoid(context, this.x + 48, this.y + 2, this.x + 50, this.y, this.x + 50, this.y + 10, this.x + 48, this.y + 8, '#84E155');
-	      this.trapezoid(context, this.x, this.y, this.x + 50, this.y, this.x + 48, this.y + 2, this.x + 2, this.y + 2, '#66A547');
-	      this.trapezoid(context, this.x + 2, this.y + 8, this.x + 48, this.y + 8, this.x + 50, this.y + 10, this.x, this.y + 10, '#66A547');
+	      this.buildTrapezoid(context, this.x, this.y, this.x + 2, this.y + 2, this.x + 2, this.y + 8, this.x, this.y + 10, '#84e155');
+	      this.buildTrapezoid(context, this.x + 48, this.y + 2, this.x + 50, this.y, this.x + 50, this.y + 10, this.x + 48, this.y + 8, '#84e155');
+	      this.buildTrapezoid(context, this.x, this.y, this.x + 50, this.y, this.x + 48, this.y + 2, this.x + 2, this.y + 2, '#66a547');
+	      this.buildTrapezoid(context, this.x + 2, this.y + 8, this.x + 48, this.y + 8, this.x + 50, this.y + 10, this.x, this.y + 10, '#66a547');
 	    } else if (this.unbreakable === true) {
-	      context.fillStyle = '#EFECF0';
+	      context.fillStyle = '#efecf0';
 	      context.fillRect(this.x, this.y, this.width, this.height);
-	      this.trapezoid(context, this.x, this.y, this.x + 2, this.y + 2, this.x + 2, this.y + 8, this.x, this.y + 10, '#DCD9DC');
-	      this.trapezoid(context, this.x + 48, this.y + 2, this.x + 50, this.y, this.x + 50, this.y + 10, this.x + 48, this.y + 8, '#DCD9DC');
-	      this.trapezoid(context, this.x, this.y, this.x + 50, this.y, this.x + 48, this.y + 2, this.x + 2, this.y + 2, '#A5A3A5');
-	      this.trapezoid(context, this.x + 2, this.y + 8, this.x + 48, this.y + 8, this.x + 50, this.y + 10, this.x, this.y + 10, '#A5A3A5');
+	      this.buildTrapezoid(context, this.x, this.y, this.x + 2, this.y + 2, this.x + 2, this.y + 8, this.x, this.y + 10, '#dcd9dc');
+	      this.buildTrapezoid(context, this.x + 48, this.y + 2, this.x + 50, this.y, this.x + 50, this.y + 10, this.x + 48, this.y + 8, '#dcd9dc');
+	      this.buildTrapezoid(context, this.x, this.y, this.x + 50, this.y, this.x + 48, this.y + 2, this.x + 2, this.y + 2, '#a5a3a5');
+	      this.buildTrapezoid(context, this.x + 2, this.y + 8, this.x + 48, this.y + 8, this.x + 50, this.y + 10, this.x, this.y + 10, '#a5a3a5');
 	    } else {
-	      context.fillStyle = '#FA47C9';
+	      context.fillStyle = '#fa47c9';
 	      context.fillRect(this.x, this.y, this.width, this.height);
-	      this.trapezoid(context, this.x, this.y, this.x + 2, this.y + 2, this.x + 2, this.y + 8, this.x, this.y + 10, '#FA39C5');
-	      this.trapezoid(context, this.x + 48, this.y + 2, this.x + 50, this.y, this.x + 50, this.y + 10, this.x + 48, this.y + 8, '#FA39C5');
-	      this.trapezoid(context, this.x, this.y, this.x + 50, this.y, this.x + 48, this.y + 2, this.x + 2, this.y + 2, '#AB318B');
-	      this.trapezoid(context, this.x + 2, this.y + 8, this.x + 48, this.y + 8, this.x + 50, this.y + 10, this.x, this.y + 10, '#AB318B');
+	      this.buildTrapezoid(context, this.x, this.y, this.x + 2, this.y + 2, this.x + 2, this.y + 8, this.x, this.y + 10, '#fa39c5');
+	      this.buildTrapezoid(context, this.x + 48, this.y + 2, this.x + 50, this.y, this.x + 50, this.y + 10, this.x + 48, this.y + 8, '#fa39c5');
+	      this.buildTrapezoid(context, this.x, this.y, this.x + 50, this.y, this.x + 48, this.y + 2, this.x + 2, this.y + 2, '#ab318b');
+	      this.buildTrapezoid(context, this.x + 2, this.y + 8, this.x + 48, this.y + 8, this.x + 50, this.y + 10, this.x, this.y + 10, '#ab318b');
 	    }
 	  }
 
-	  trapezoid(context, x1, y1, x2, y2, x3, y3, x4, y4, color) {
+	  buildTrapezoid(context, x1, y1, x2, y2, x3, y3, x4, y4, color) {
 	    context.beginPath();
 	    context.moveTo(x1, y1);
 	    context.lineTo(x2, y2);
@@ -394,8 +392,8 @@
 	      start = Math.floor(Math.random() * arr.length);
 	      buffer.push(arr.splice(start, 1)[0]);
 	    }
-	    this.assignSpecialBlocks(buffer, numOfSpecialBlocks);
 
+	    this.assignSpecialBlocks(buffer, numOfSpecialBlocks);
 	    return buffer;
 	  }
 
@@ -407,6 +405,7 @@
 	      this.y = 6 + i % 3 * 10 * 2;
 	      levelOneArray.push(new Block(this.x, this.y));
 	    }
+
 	    levelOneArray = this.randomSpecialBlocks(levelOneArray, 3);
 	    return levelOneArray;
 	  }
@@ -439,6 +438,7 @@
 	        levelTwoArray.push(new Block(this.x, this.y));
 	      }
 	    }
+
 	    levelTwoArray = this.randomSpecialBlocks(levelTwoArray, 5);
 	    return levelTwoArray;
 	  }
@@ -553,10 +553,10 @@
 	        if (array[i].unbreakable === false) {
 	          game.points += 10;
 	          this.updatePointsInfoBar(game);
-	          document.getElementById('normal-bounce-sound').volume = .3;
+	          document.getElementById('normal-bounce-sound').volume = 0.5;
 	          document.getElementById('normal-bounce-sound').play();
 	        } else {
-	          document.getElementById('unbreakable-bounce-sound').volume = .3;
+	          document.getElementById('unbreakable-bounce-sound').volume = 0.5;
 	          document.getElementById('unbreakable-bounce-sound').play();
 	          return;
 	        }
@@ -565,7 +565,7 @@
 	          powerupArray.push(new Powerup(array[i].x + 5, array[i].y));
 	          game.points += 15;
 	          this.updatePointsInfoBar(game);
-	          document.getElementById('special-bounce-sound').volume = .8;
+	          document.getElementById('special-bounce-sound').volume = 0.8;
 	          document.getElementById('special-bounce-sound').play();
 	        }
 
@@ -598,12 +598,14 @@
 	    this.width = 30;
 	    this.height = 12;
 	    this.radius = 8;
+	    this.currentPowerup = '';
+	    this.currentPowerupAlpha = 1;
 	  }
 
 	  draw(context) {
 	    this.y += this.moveY;
-	    context.fillStyle = '#00FFFF';
-	    context.strokeStyle = '#00FFFF';
+	    context.fillStyle = '#00ffff';
+	    context.strokeStyle = '#00ffff';
 	    context.lineJoin = 'round';
 	    context.lineWidth = 5;
 	    context.strokeRect(this.x + this.radius / 2, this.y + this.radius / 2, this.width - this.radius, this.height - this.radius);
@@ -611,14 +613,14 @@
 	    context.font = '10px Ubuntu';
 	    context.textAlign = 'center';
 	    context.textBaseline = 'middle';
-	    context.fillStyle = '#FF6600';
+	    context.fillStyle = '#ff6600';
 	    context.fillText('P', this.x + 15, this.y + 6);
 	  }
 
 	  hitsPaddle(paddle, ball, array, game, block) {
 	    for (var i = 0; i < array.length; i++) {
 	      if (array[i].y + array[i].height >= paddle.y && array[i].x <= paddle.x + paddle.width && array[i].x + array[i].width >= paddle.x && array[i].y <= paddle.y + 12) {
-	        array[i].y = -10;
+	        array[i].y = -20;
 	        array[i].moveY = 0;
 	        game.points += 25;
 	        block.updatePointsInfoBar(game);
@@ -640,48 +642,69 @@
 
 	    if (rollDice <= .25) {
 	      if (paddle.width === 50) {
-	        console.log('short');
+	        this.currentPowerupAlpha = 1;
+	        this.currentPowerup = 'Short Paddle';
 	        return paddle.shortPaddle();
 	      } else {
+	        this.currentPowerupAlpha = 1;
+	        this.currentPowerup = 'Long Paddle';
 	        return paddle.resetPaddle();
 	      }
 	    } else if (rollDice > .25 && rollDice <= .5) {
 	      if (paddle.width === 50) {
-	        console.log('long');
+	        this.currentPowerupAlpha = 1;
+	        this.currentPowerup = 'Long Paddle';
 	        return paddle.longPaddle();
 	      } else {
+	        this.currentPowerupAlpha = 1;
+	        this.currentPowerup = 'Short Paddle';
 	        return paddle.resetPaddle();
 	      }
 	    } else if (rollDice > .5 && rollDice <= .75) {
 	      if (ball.moveY >= 1 || ball.moveY <= -1) {
 	        if (ball.moveX >= 1 || ball.moveX <= -1) {
-	          console.log('slow');
+	          this.currentPowerupAlpha = 1;
+	          this.currentPowerup = 'Slow Ball';
 	          return ball.slowBall();
 	        } else {
+	          this.currentPowerupAlpha = 1;
+	          this.currentPowerup = 'Fast Ball';
 	          return ball.fastBall();
 	        }
 	      } else {
+	        this.currentPowerupAlpha = 1;
+	        this.currentPowerup = 'Fast Ball';
 	        return ball.fastBall();
 	      }
 	    } else {
 	      if (ball.moveY <= 6 || ball.moveY >= -6) {
 	        if (ball.moveX <= 6 || ball.moveX >= -6) {
-	          console.log('fast');
+	          this.currentPowerupAlpha = 1;
+	          this.currentPowerup = 'Fast Ball';
 	          return ball.fastBall();
 	        } else {
+	          this.currentPowerupAlpha = 1;
+	          this.currentPowerup = 'Slow Ball';
 	          return ball.slowBall();
 	        }
 	      } else {
+	        this.currentPowerupAlpha = 1;
+	        this.currentPowerup = 'Slow Ball';
 	        return ball.slowBall();
 	      }
 	    }
 	  }
 
-	  // current powerups:
-	  // ball.slowBall();
-	  // ball.fastBall();
-	  // paddle.longPaddle();
+	  drawPowerupText(context) {
+	    let decrementer = .01;
 
+	    context.font = '20px Ubuntu';
+	    context.textAlign = 'center';
+	    context.textBaseline = 'middle';
+	    this.currentPowerupAlpha -= decrementer;
+	    context.fillStyle = `rgba(204, 255 , 0, ${this.currentPowerupAlpha})`;
+	    context.fillText(this.currentPowerup, 250, 375);
+	  }
 
 	}
 
@@ -692,6 +715,7 @@
 /***/ (function(module, exports) {
 
 	class GamePiece {
+
 	  constructor(x, y) {
 	    this.x = x;
 	    this.y = y;
@@ -716,7 +740,7 @@
 	  }
 
 	  draw(context) {
-	    context.fillStyle = '#33CCFF';
+	    context.fillStyle = '#33ccff';
 	    context.fillRect(this.x, this.y, this.width, this.height);
 	  }
 
@@ -744,11 +768,11 @@
 	  }
 
 	  longPaddle() {
-	    this.width = this.width * 1.75;
+	    this.width *= 1.75;
 	  }
 
 	  shortPaddle() {
-	    this.width = this.width * .4;
+	    this.width *= 0.4;
 	  }
 
 	  resetPaddle() {
@@ -778,7 +802,7 @@
 	  draw(context, paddle) {
 	    context.beginPath();
 	    context.arc(this.x, this.y, 6, 0, Math.PI * 2);
-	    context.fillStyle = '#FFFF33';
+	    context.fillStyle = '#fff200';
 	    context.fill();
 	    context.closePath();
 	    if (this.moveX === 0) {
@@ -804,7 +828,8 @@
 
 	  bounceWalls(canvasWidth) {
 	    let bounceWallSound = document.getElementById('wall-bounce');
-	    bounceWallSound.volume = .1;
+
+	    bounceWallSound.volume = 0.05;
 
 	    if (this.x + 6 >= canvasWidth) {
 	      this.moveX = -this.moveX;
@@ -821,19 +846,20 @@
 	  bouncePaddleY(paddle) {
 	    let paddleRight = paddle.x + paddle.width;
 	    let paddleLeft = paddle.x;
+	    let unbreakableBounceSound = document.getElementById('unbreakable-bounce-sound');
 
 	    if (this.y >= paddle.y - 6 && this.x + 6 >= paddleLeft && this.x - 6 <= paddleRight) {
 	      if (this.moveY > 4 || this.moveY < -4) {
 	        this.moveY = -this.moveY;
 	        if (this.moveY !== 0) {
-	          document.getElementById('unbreakable-bounce-sound').volume = .3;
-	          document.getElementById('unbreakable-bounce-sound').play();
+	          unbreakableBounceSound.volume = 0.5;
+	          unbreakableBounceSound.play();
 	        }
 	      } else {
 	        this.moveY = -this.moveY * 1.1;
 	        if (this.moveY !== 0) {
-	          document.getElementById('unbreakable-bounce-sound').volume = .3;
-	          document.getElementById('unbreakable-bounce-sound').play();
+	          unbreakableBounceSound.volume = 0.5;
+	          unbreakableBounceSound.play();
 	        }
 	      }
 	    }
@@ -847,9 +873,9 @@
 	    if (this.y === paddle.y - 6 && this.x + 6 >= paddleLeft + paddleQuintent * 3 && this.x - 6 <= paddleLeft + paddleQuintent * 4) {
 	      if (this.moveX < 4 || this.moveX > -4) {
 	        if (this.moveX < 0) {
-	          this.moveX = this.moveX * .9;
+	          this.moveX *= 0.9;
 	        } else {
-	          this.moveX = this.moveX * 1.1;
+	          this.moveX *= 1.1;
 	        }
 	      }
 	    }
@@ -857,9 +883,9 @@
 	    if (this.y === paddle.y - 6 && this.x + 6 >= paddleLeft + paddleQuintent * 4 && this.x - 6 <= paddleRight) {
 	      if (this.moveX < 4 || this.moveX > -4) {
 	        if (this.moveX < 0) {
-	          this.moveX = this.moveX * .7;
+	          this.moveX *= 0.7;
 	        } else {
-	          this.moveX = this.moveX * 1.3;
+	          this.moveX *= 1.3;
 	        }
 	      }
 	    }
@@ -867,9 +893,9 @@
 	    if (this.y === paddle.y - 6 && this.x >= paddleLeft + paddleQuintent * 1 && this.x <= paddleLeft + paddleQuintent * 2) {
 	      if (this.moveX < 4 || this.moveX > -4) {
 	        if (this.moveX > 0) {
-	          this.moveX = this.moveX * .9;
+	          this.moveX *= 0.9;
 	        } else {
-	          this.moveX = this.moveX * 1.1;
+	          this.moveX *= 1.1;
 	        }
 	      }
 	    }
@@ -877,24 +903,22 @@
 	    if (this.y === paddle.y - 6 && this.x >= paddleLeft && this.x <= paddleLeft + 10) {
 	      if (this.moveX < 4 || this.moveX > -4) {
 	        if (this.moveX > 0) {
-	          this.moveX = this.moveX * .7;
+	          this.moveX *= 0.7;
 	        } else {
-	          this.moveX = this.moveX * 1.3;
+	          this.moveX *= 1.3;
 	        }
 	      }
 	    }
 	  }
 
 	  slowBall() {
-	    this.moveX = this.moveX / 2;
-	    this.moveY = this.moveY / 2;
-	    console.log(this.moveX, this.moveY);
+	    this.moveX /= 2;
+	    this.moveY /= 2;
 	  }
 
 	  fastBall() {
-	    this.moveX = this.moveX * 2;
-	    this.moveY = this.moveY * 2;
-	    console.log(this.moveX, this.moveY);
+	    this.moveX *= 2;
+	    this.moveY *= 2;
 	  }
 
 	}
