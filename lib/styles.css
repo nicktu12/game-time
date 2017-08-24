@@ -158,15 +158,22 @@ article {
 
 #level-up-modal {
   height: 150px;
+  padding: 5px 5px 0 10px;
 }
 
 #lost-life-modal {
   height: 170px;
+  padding: 5px 5px 0 10px;
 }
 
-#lost-game-modal,
-#you-won-modal {
+#lost-game-modal {
   height: 150px;
+  padding: 8px 5px 0 10px;
+}
+
+#you-won-modal {
+  height: 155px;
+  padding: 10px 5px 0 10px;
 }
 
 #level-up-modal,
@@ -174,7 +181,6 @@ article {
 #you-won-modal {
   display: flex;
   flex-direction: column;
-  padding: 5px 5px 0 10px;
 }
 
 .animate2 {
@@ -190,9 +196,13 @@ article {
   text-align: center;
 }
 
-.lost-life-text,
+.lost-life-text {
+  padding: 10px 5px 15px 10px;
+  color: #1e1e1e;
+}
+
 .level-up-text {
-  padding: 10px 5px 15px 5px;
+  padding: 10px 5px 15px 15px;
   color: #1e1e1e;
 }
 
