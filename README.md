@@ -39,23 +39,32 @@ Each javascript file in your project should have it’s own test file e.g. if yo
 
 ### Level 1
 
-
+![image](https://user-images.githubusercontent.com/25447342/29676132-72f25ad8-88b4-11e7-9cca-050ac446f729.png)
 
 ### Level 2
 
-
+![image](https://user-images.githubusercontent.com/25447342/29676247-c6deb60a-88b4-11e7-8581-63b204128792.png)
 
 ### Level 3
 
-
+![image](https://user-images.githubusercontent.com/25447342/29676287-e1751d6a-88b4-11e7-9ad3-072673706f4a.png)
 
 ### Level 4
 
+![image](https://user-images.githubusercontent.com/25447342/29676313-f302512e-88b4-11e7-822b-56a5580c224c.png)
 
 ### Level Up
 
+![image](https://user-images.githubusercontent.com/25447342/29676215-ae4ef0c8-88b4-11e7-8a3e-b6605be82b53.png)
+
 ### Lose A Life
+
+![image](https://user-images.githubusercontent.com/25447342/29676186-9b43947a-88b4-11e7-8f3d-8be82e9bba7a.png)
 
 ### Lose Game
 
+![image](https://user-images.githubusercontent.com/25447342/29676391-353f0a5a-88b5-11e7-9190-79f6e64cb07a.png)
+
 ### Win Game
+
+![image](https://user-images.githubusercontent.com/25447342/29676338-034e27c4-88b5-11e7-9f09-72983f6f3a26.png)
