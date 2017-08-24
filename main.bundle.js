@@ -507,6 +507,9 @@
 	        }
 	        if (array[i].special === true) {
 	          powerupArray.push(new Powerup(ball.x, ball.y));
+	          game.points += 25;
+	          this.updatePointsInfoBar(game);
+
 	          // audioSpecial.play();
 	        }
 	        array.splice(i, 1);
