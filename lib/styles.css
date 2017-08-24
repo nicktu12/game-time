@@ -164,6 +164,7 @@ article {
   height: 170px;
 }
 
+#lost-game-modal,
 #you-won-modal {
   height: 150px;
 }
