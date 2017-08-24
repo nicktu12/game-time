@@ -92,8 +92,8 @@ ul {
   margin: 0 auto;
   margin-top: 3%;
   padding: 8px 16px;
-  width: 50%;
-  background: #FF6633;
+  width: 30%;
+  background: #35A4BF;
   border: none;
   border-radius: 4px;
   color: #F0F0ED;
@@ -104,7 +104,7 @@ ul {
 }
 
 #start-btn:hover {
-  background: #BF4D26;
+  background: #26788B;
   cursor: pointer;
 }
 
@@ -210,7 +210,7 @@ button {
   border: none;
   display: block;
   margin: 0 auto;
-  background-color: #FF6633;
+  background-color: #35A4BF;
   border-radius: 4px;
   font-size: 16px;
   color: #F0F0ED;
@@ -221,6 +221,6 @@ button {
 #continue-to-next-life:hover,
 #continue-to-next-level:hover,
 button:hover {
-  background: #BF4D26;
+  background: #26788B;
   cursor: pointer;
 }
