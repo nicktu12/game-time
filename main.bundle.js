@@ -321,7 +321,7 @@
 	  ball.bouncePaddleModulation(paddle);
 	  block.buildBlock(buildAnArray, context);
 	  block.breakBlock(buildAnArray, ball, game, powerupArray);
-	  powerup.hitsPaddle(paddle, ball, powerupArray);
+	  powerup.hitsPaddle(paddle, ball, powerupArray, game, block);
 	  powerup.dropPowerup(powerupArray, context);
 	  game.missPaddle(ball, canvas);
 	  game.levelUpAlert();
@@ -354,16 +354,39 @@
 	    if (this.special === true) {
 	      context.fillStyle = '#99FF66';
 	      context.fillRect(this.x, this.y, this.width, this.height);
+	      this.trapezoid(context, this.x, this.y, this.x + 2, this.y + 2, this.x + 2, this.y + 8, this.x, this.y + 10, '#84E155');
+	      this.trapezoid(context, this.x + 48, this.y + 2, this.x + 50, this.y, this.x + 50, this.y + 10, this.x + 48, this.y + 8, '#84E155');
+	      this.trapezoid(context, this.x, this.y, this.x + 50, this.y, this.x + 48, this.y + 2, this.x + 2, this.y + 2, '#66A547');
+	      this.trapezoid(context, this.x + 2, this.y + 8, this.x + 48, this.y + 8, this.x + 50, this.y + 10, this.x, this.y + 10, '#66A547');
 	    } else if (this.unbreakable === true) {
 	      context.fillStyle = '#EFECF0';
 	      context.fillRect(this.x, this.y, this.width, this.height);
+	      this.trapezoid(context, this.x, this.y, this.x + 2, this.y + 2, this.x + 2, this.y + 8, this.x, this.y + 10, '#DCD9DC');
+	      this.trapezoid(context, this.x + 48, this.y + 2, this.x + 50, this.y, this.x + 50, this.y + 10, this.x + 48, this.y + 8, '#DCD9DC');
+	      this.trapezoid(context, this.x, this.y, this.x + 50, this.y, this.x + 48, this.y + 2, this.x + 2, this.y + 2, '#A5A3A5');
+	      this.trapezoid(context, this.x + 2, this.y + 8, this.x + 48, this.y + 8, this.x + 50, this.y + 10, this.x, this.y + 10, '#A5A3A5');
 	    } else {
-	      context.fillStyle = '#FF0066';
+	      context.fillStyle = '#FA47C9';
 	      context.fillRect(this.x, this.y, this.width, this.height);
+	      this.trapezoid(context, this.x, this.y, this.x + 2, this.y + 2, this.x + 2, this.y + 8, this.x, this.y + 10, '#FA39C5');
+	      this.trapezoid(context, this.x + 48, this.y + 2, this.x + 50, this.y, this.x + 50, this.y + 10, this.x + 48, this.y + 8, '#FA39C5');
+	      this.trapezoid(context, this.x, this.y, this.x + 50, this.y, this.x + 48, this.y + 2, this.x + 2, this.y + 2, '#AB318B');
+	      this.trapezoid(context, this.x + 2, this.y + 8, this.x + 48, this.y + 8, this.x + 50, this.y + 10, this.x, this.y + 10, '#AB318B');
 	    }
 	  }
 
-	  randomSpecialBlocks(arr) {
+	  trapezoid(context, x1, y1, x2, y2, x3, y3, x4, y4, color) {
+	    context.beginPath();
+	    context.moveTo(x1, y1);
+	    context.lineTo(x2, y2);
+	    context.lineTo(x3, y3);
+	    context.lineTo(x4, y4);
+	    context.closePath();
+	    context.fillStyle = color;
+	    context.fill();
+	  }
+
+	  randomSpecialBlocks(arr, numOfSpecialBlocks) {
 	    let buffer = [],
 	        start;
 
@@ -371,6 +394,8 @@
 	      start = Math.floor(Math.random() * arr.length);
 	      buffer.push(arr.splice(start, 1)[0]);
 	    }
+	    this.assignSpecialBlocks(buffer, numOfSpecialBlocks);
+
 	    return buffer;
 	  }
 
@@ -382,10 +407,7 @@
 	      this.y = 6 + i % 3 * 10 * 2;
 	      levelOneArray.push(new Block(this.x, this.y));
 	    }
-	    levelOneArray = this.randomSpecialBlocks(levelOneArray);
-
-	    this.assignSpecialBlocks(levelOneArray, 3);
-
+	    levelOneArray = this.randomSpecialBlocks(levelOneArray, 3);
 	    return levelOneArray;
 	  }
 
@@ -417,18 +439,14 @@
 	        levelTwoArray.push(new Block(this.x, this.y));
 	      }
 	    }
-	    levelTwoArray = this.randomSpecialBlocks(levelTwoArray);
-	    this.assignSpecialBlocks(levelTwoArray, 4);
-
+	    levelTwoArray = this.randomSpecialBlocks(levelTwoArray, 5);
 	    return levelTwoArray;
 	  }
 
 	  buildLevelThree() {
 	    let levelThreeArray = [];
 
-	    // something weird is going on here with building 24 blocks
-
-	    for (let i = 0; i < 24; i++) {
+	    for (let i = 0; i < 6; i++) {
 	      this.x = 193.75 + i % 2 * 50 * 1.25;
 	      this.y = 125 + i % 3 * 10 * 2;
 	      levelThreeArray.push(new Block(this.x, this.y));
@@ -437,9 +455,8 @@
 	    for (var i = 0; i < 1; i++) {
 	      levelThreeArray[i].special = true;
 	    }
-	    levelThreeArray = this.randomSpecialBlocks(levelThreeArray);
-	    this.assignSpecialBlocks(levelThreeArray, 1);
 
+	    levelThreeArray = this.randomSpecialBlocks(levelThreeArray, 0);
 	    return levelThreeArray;
 	  }
 
@@ -510,15 +527,16 @@
 	        levelFourArray.push(new Block(this.x, this.y));
 	      }
 	    }
-	    levelFourArray = this.randomSpecialBlocks(levelFourArray);
-	    this.assignSpecialBlocks(levelFourArray, 12);
 
+	    levelFourArray = this.randomSpecialBlocks(levelFourArray, 12);
 	    return levelFourArray;
 	  }
 
 	  assignSpecialBlocks(array, number) {
 	    for (var i = 0; i < number; i++) {
-	      array[i].special = true;
+	      if (array[i].unbreakable === false) {
+	        array[i].special = true;
+	      }
 	    }
 	  }
 
@@ -529,23 +547,20 @@
 	  }
 
 	  breakBlock(array, ball, game, powerupArray) {
-	    // var audioNormal = new Audio('lib/sounds/normal-bounce.wav');
-	    // var audioUnbreakable = new Audio('lib/sounds/unbreakable-bounce.wav');
-	    // var audioSpecial = new Audio('lib/sounds/special-bounce.wav');
-
 	    for (let i = 0; i < array.length; i++) {
 	      if (ball.y + 6 >= array[i].y && ball.y - 6 <= array[i].y + 10 && ball.x <= array[i].x + 50 && ball.x >= array[i].x) {
 	        ball.moveY = -ball.moveY;
 	        if (array[i].unbreakable === false) {
 	          game.points += 10;
 	          this.updatePointsInfoBar(game);
-	          document.getElementById('normal-bounce-sound').volume = .2;
+	          document.getElementById('normal-bounce-sound').volume = .3;
 	          document.getElementById('normal-bounce-sound').play();
 	        } else {
-	          document.getElementById('unbreakable-bounce-sound').volume = .2;
+	          document.getElementById('unbreakable-bounce-sound').volume = .3;
 	          document.getElementById('unbreakable-bounce-sound').play();
 	          return;
 	        }
+
 	        if (array[i].special === true) {
 	          powerupArray.push(new Powerup(array[i].x + 5, array[i].y));
 	          game.points += 15;
@@ -553,6 +568,7 @@
 	          document.getElementById('special-bounce-sound').volume = .8;
 	          document.getElementById('special-bounce-sound').play();
 	        }
+
 	        array.splice(i, 1);
 	      }
 	    }
@@ -579,24 +595,33 @@
 	  constructor(x, y) {
 	    super(x, y);
 	    this.moveY = 1.3;
+	    this.width = 30;
+	    this.height = 12;
+	    this.radius = 8;
 	  }
 
 	  draw(context) {
-	    context.fillStyle = '#00FFFF';
-	    context.fillRect(this.x, this.y, 40, 10);
 	    this.y += this.moveY;
-	    context.font = "10px Ubuntu";
-	    context.textAlign = "center";
-	    context.textBaseline = "middle";
-	    context.fillStyle = "#FF6600";
-	    context.fillText("P", this.x, this.y);
+	    context.fillStyle = '#00FFFF';
+	    context.strokeStyle = '#00FFFF';
+	    context.lineJoin = 'round';
+	    context.lineWidth = 5;
+	    context.strokeRect(this.x + this.radius / 2, this.y + this.radius / 2, this.width - this.radius, this.height - this.radius);
+	    context.fillRect(this.x + this.radius / 2, this.y + this.radius / 2, this.width - this.radius, this.height - this.radius);
+	    context.font = '10px Ubuntu';
+	    context.textAlign = 'center';
+	    context.textBaseline = 'middle';
+	    context.fillStyle = '#FF6600';
+	    context.fillText('P', this.x + 15, this.y + 6);
 	  }
 
-	  hitsPaddle(paddle, ball, array) {
+	  hitsPaddle(paddle, ball, array, game, block) {
 	    for (var i = 0; i < array.length; i++) {
-	      if (array[i].y + 5 >= paddle.y && array[i].x <= paddle.x + paddle.width && array[i].x + 5 >= paddle.x && array[i].y - 5 <= paddle.y + 12) {
+	      if (array[i].y + array[i].height >= paddle.y && array[i].x <= paddle.x + paddle.width && array[i].x + array[i].width >= paddle.x && array[i].y <= paddle.y + 12) {
 	        array[i].y = -10;
 	        array[i].moveY = 0;
+	        game.points += 25;
+	        block.updatePointsInfoBar(game);
 	        this.chooseRandomPowerup(ball, paddle);
 	        document.getElementById('powerup-paddle').volume = .1;
 	        document.getElementById('powerup-paddle').play();
@@ -613,17 +638,41 @@
 	  chooseRandomPowerup(ball, paddle) {
 	    let rollDice = Math.random();
 
-	    if (rollDice <= .5) {
-	      if (paddle.width >= 50) {
+	    if (rollDice <= .25) {
+	      if (paddle.width === 50) {
+	        console.log('short');
 	        return paddle.shortPaddle();
 	      } else {
 	        return paddle.resetPaddle();
 	      }
-	    } else if (rollDice > .5) {
-	      if (paddle.width <= 50) {
+	    } else if (rollDice > .25 && rollDice <= .5) {
+	      if (paddle.width === 50) {
+	        console.log('long');
 	        return paddle.longPaddle();
 	      } else {
 	        return paddle.resetPaddle();
+	      }
+	    } else if (rollDice > .5 && rollDice <= .75) {
+	      if (ball.moveY >= 1 || ball.moveY <= -1) {
+	        if (ball.moveX >= 1 || ball.moveX <= -1) {
+	          console.log('slow');
+	          return ball.slowBall();
+	        } else {
+	          return ball.fastBall();
+	        }
+	      } else {
+	        return ball.fastBall();
+	      }
+	    } else {
+	      if (ball.moveY <= 6 || ball.moveY >= -6) {
+	        if (ball.moveX <= 6 || ball.moveX >= -6) {
+	          console.log('fast');
+	          return ball.fastBall();
+	        } else {
+	          return ball.slowBall();
+	        }
+	      } else {
+	        return ball.slowBall();
 	      }
 	    }
 	  }
@@ -773,17 +822,17 @@
 	    let paddleRight = paddle.x + paddle.width;
 	    let paddleLeft = paddle.x;
 
-	    if (this.y === paddle.y - 6 && this.x + 6 > paddleLeft && this.x - 6 < paddleRight) {
+	    if (this.y >= paddle.y - 6 && this.x + 6 >= paddleLeft && this.x - 6 <= paddleRight) {
 	      if (this.moveY > 4 || this.moveY < -4) {
 	        this.moveY = -this.moveY;
 	        if (this.moveY !== 0) {
-	          document.getElementById('unbreakable-bounce-sound').volume = .2;
+	          document.getElementById('unbreakable-bounce-sound').volume = .3;
 	          document.getElementById('unbreakable-bounce-sound').play();
 	        }
 	      } else {
 	        this.moveY = -this.moveY * 1.1;
 	        if (this.moveY !== 0) {
-	          document.getElementById('unbreakable-bounce-sound').volume = .2;
+	          document.getElementById('unbreakable-bounce-sound').volume = .3;
 	          document.getElementById('unbreakable-bounce-sound').play();
 	        }
 	      }
@@ -795,7 +844,7 @@
 	    let paddleLeft = paddle.x;
 	    let paddleQuintent = paddle.width / 5;
 
-	    if (this.y === paddle.y - 6 && this.x + 6 > paddleLeft + paddleQuintent * 3 && this.x - 6 < paddleLeft + paddleQuintent * 4) {
+	    if (this.y === paddle.y - 6 && this.x + 6 >= paddleLeft + paddleQuintent * 3 && this.x - 6 <= paddleLeft + paddleQuintent * 4) {
 	      if (this.moveX < 4 || this.moveX > -4) {
 	        if (this.moveX < 0) {
 	          this.moveX = this.moveX * .9;
@@ -805,7 +854,7 @@
 	      }
 	    }
 
-	    if (this.y === paddle.y - 6 && this.x + 6 > paddleLeft + paddleQuintent * 4 && this.x - 6 < paddleRight) {
+	    if (this.y === paddle.y - 6 && this.x + 6 >= paddleLeft + paddleQuintent * 4 && this.x - 6 <= paddleRight) {
 	      if (this.moveX < 4 || this.moveX > -4) {
 	        if (this.moveX < 0) {
 	          this.moveX = this.moveX * .7;
@@ -815,7 +864,7 @@
 	      }
 	    }
 
-	    if (this.y === paddle.y - 6 && this.x > paddleLeft + paddleQuintent * 1 && this.x < paddleLeft + paddleQuintent * 2) {
+	    if (this.y === paddle.y - 6 && this.x >= paddleLeft + paddleQuintent * 1 && this.x <= paddleLeft + paddleQuintent * 2) {
 	      if (this.moveX < 4 || this.moveX > -4) {
 	        if (this.moveX > 0) {
 	          this.moveX = this.moveX * .9;
@@ -825,7 +874,7 @@
 	      }
 	    }
 
-	    if (this.y === paddle.y - 6 && this.x > paddleLeft && this.x < paddleLeft + 10) {
+	    if (this.y === paddle.y - 6 && this.x >= paddleLeft && this.x <= paddleLeft + 10) {
 	      if (this.moveX < 4 || this.moveX > -4) {
 	        if (this.moveX > 0) {
 	          this.moveX = this.moveX * .7;
@@ -839,11 +888,13 @@
 	  slowBall() {
 	    this.moveX = this.moveX / 2;
 	    this.moveY = this.moveY / 2;
+	    console.log(this.moveX, this.moveY);
 	  }
 
 	  fastBall() {
 	    this.moveX = this.moveX * 2;
 	    this.moveY = this.moveY * 2;
+	    console.log(this.moveX, this.moveY);
 	  }
 
 	}
