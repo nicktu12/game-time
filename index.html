@@ -1,26 +1,26 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <link href="https://fonts.googleapis.com/css?family=Ubuntu:400,500" rel="stylesheet">
-  <link rel="stylesheet" href="./lib/styles.css">
-  <title>Space Blox</title>
-</head>
-<body>
-  <main id="container">
+  <head>
+    <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:400,500" rel="stylesheet">
+    <link rel="stylesheet" href="./lib/styles.css">
+    <title>Space Blox</title>
+  </head>
+  <body>
+    <main id="container">
 
-    <section id="directions-modal" class="animate fadeIn">
+      <section id="directions-modal" class="animate fadeIn">
         <h1 class="space-blox">Space Blox</h1>
         <p class="directions-text">The goal of the game is to break all the (breakable) blocks on the screen. Blocks can be broken by colliding with the ball. Some more things to know before you play:</p>
         <ul>
-          <li class="directions-li">You have three lives.</li>
           <li class="directions-li">Hitting each breakable block earns you 10 points.</li>
+          <li class="directions-li">You have three lives, but each time you lose one you lose 50 points.</li>
           <li class="directions-li">There are four levels to beat!</li>
-          <li class="directions-li">You can use the mouse OR the left/right arrow keys to control the paddle.</li>
+          <li class="directions-li">Use the mouse OR the left/right arrow keys to control the paddle.</li>
           <li class="directions-li">Each level has two powerups. Breaking a green block will unlock that powerup (and give you 25 points!) - it may help you or it may increase the challenge!</li>
-          <li class="directions-li">Grey, unbreakable, blocks will start appearing in Level 2. Hitting them earns NO points.</li>
+          <li class="directions-li">Grey, UNBREAKABLE, blocks will start appearing in Level 2. Hitting them earns NO points.</li>
         </ul>
-        <p class="directions-text">Think you're ready to play? Click the button below, then launch the ball with a spacebar or mouse click.</p>
+        <p class="directions-text">Think you're ready to play? Click the button below, then launch the ball with a <strong>mouse click</strong>.</p>
         <button id="start-btn" type="button" name="button">Ready to Play</button>
       </section>
 
@@ -30,22 +30,21 @@
 
     </main>
 
-
-  <aside id="info-bar-container">
-    <section id="info-bar" class="animate-canvas fadeIn">
-      <aside id="current-level">
-        <p>Current Level: 1</p>
-      </aside>
-      <aside id="points">
-        <p>Points: 0</p>
-      </aside>
-      <aside id="lives-left">
-        <p>Lives Left: </p>
-      </aside>
-    </section>
-  </aside>
+    <aside id="info-bar-container">
+      <section id="info-bar" class="animate-canvas fadeIn">
+        <aside id="current-level">
+          <p>Current Level: 1</p>
+        </aside>
+        <aside id="points">
+          <p>Points: 0</p>
+        </aside>
+        <aside id="lives-left">
+          <p>Lives Left: </p>
+        </aside>
+      </section>
+    </aside>
 
     <script src="main.bundle.js"></script>
 
-</body>
+  </body>
 </html>

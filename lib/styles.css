@@ -44,7 +44,6 @@ main {
   width: 600px;
   background-color: rgba(240, 240, 237, 0.85);
   border-radius: 4px;
-  /*transition: 2s ease;*/
 }
 
 .animate {
@@ -146,7 +145,7 @@ ul {
   font-size: 17px;
 }
 
-/*===== SECTION (new life) & ARTICLE (level up) MODALS=====*/
+/*===== NEW LIFE & LEVEL UP MODALS=====*/
 section,
 article {
   display: block;
@@ -165,8 +164,9 @@ article {
   height: 170px;
 }
 
+#lost-game-modal,
 #you-won-modal {
-  height: 100px;
+  height: 150px;
 }
 
 #level-up-modal,
@@ -175,6 +175,11 @@ article {
   display: flex;
   flex-direction: column;
   padding: 5px 5px 0 10px;
+}
+
+.animate2 {
+  animation-duration: 1.5s;
+  animation-fill-mode: both;
 }
 
 .lost-life,
@@ -191,14 +196,9 @@ article {
   color: #1e1e1e;
 }
 
-.game-over-text {
-  padding: 10px 5px 15px 5px;
-  color: #1e1e1e;
-  text-align: center;
-}
-
+.game-over-text,
 .you-won-text {
-  padding: 10px 5px 20px 5px;
+  padding: 10px 5px 15px 5px;
   color: #1e1e1e;
   text-align: center;
 }
@@ -223,9 +223,4 @@ button {
 button:hover {
   background: #BF4D26;
   cursor: pointer;
-}
-
-.animate2 {
-  animation-duration: 1.5s;
-  animation-fill-mode: both;
 }

@@ -45,27 +45,6 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	const Game = __webpack_require__(1);
-	// const Ball = require('./Ball.js');
-	// const Paddle = require('./Paddle.js');
-	//
-	// const canvas = document.getElementById('canvas');
-	// const context = canvas.getContext('2d');
-	//
-	// //var block = new Block();
-	// var paddle = new Paddle(225, 476);
-	// //var powerup = new Powerup(300, 0);
-	// var ball = new Ball(paddle.x + 35, paddle.y - 6);
-	//
-	// const game = new Game();
-	//
-	// const startButton = document.getElementById('start-btn');
-	//
-	// startButton.addEventListener('click', function() {
-	//   let directionsModal = document.getElementById('directions-modal');
-	//
-	//   game.startGame(gameLoop);
-	//   directionsModal.remove();
-	// });
 
 /***/ }),
 /* 1 */
@@ -154,33 +133,42 @@
 	    infoBar.style.display = 'flex';
 	  }
 
-	  die(ball, canvas) {
+	  missPaddle(ball, canvas) {
 	    if (ball.y - 12 >= canvas.height) {
-	      ball.resetBall();
-	      this.livesRemaining--;
-	      this.livesCounter();
-	      this.hideCanvasAndInfo();
-	      document.body.appendChild(newLifeButton);
+	      this.loseOneLife(ball);
 	      if (this.livesRemaining > 0) {
-	        newLifeButton.innerHTML = `
-	          <div id="lost-life-modal" class="animate2 fadeIn">
-	              <h2 class="lost-life">DEATH!</h2>
-	              <p class="lost-life-text">You are running low on lives - just ${this.livesRemaining} left!
-	              Click the button to continue on to your next life.</p>
-	              <button id="continue-to-next-life">Continue</button>
-	          </div>`;
-	        this.nextLife(ball);
+	        this.useNextLife(ball);
 	      } else if (this.livesRemaining === 0) {
 	        this.lostThreeLives();
+	        this.lostGame();
 	      }
 	    }
 	  }
 
-	  lostThreeLives() {
+	  loseOneLife(ball, canvas) {
+	    ball.resetBall();
+	    this.livesRemaining--;
+	    this.livesCounter();
+	    this.hideCanvasAndInfo();
+	    document.body.appendChild(newLifeButton);
+	  }
+
+	  useNextLife(ball) {
+	    newLifeButton.innerHTML = `
+	      <div id="lost-life-modal" class="animate2 fadeIn">
+	          <h2 class="lost-life">DEATH!</h2>
+	          <p class="lost-life-text">You are running low on lives - just ${this.livesRemaining} left!
+	          Click the button to continue on to your next life.</p>
+	          <button id="continue-to-next-life">Continue</button>
+	      </div>`;
+	    this.nextLife(ball);
+	  }
+
+	  lostGame() {
 	    newLifeButton.innerHTML = `
 	    <div id="lost-life-modal" class="animate2 fadeIn">
 	        <h2 class="lost-life">GAME OVER</h2>
-	        <p class="game-over-text">You are dead. You scored ${this.points} points!</p>
+	        <p class="game-over-text">You are dead. But you did score ${this.points} points!</p>
 	        <button id="play-again">Play Again</button>
 	    </div>`;
 	    currentLevelInfoBar.innerHTML = `Current Level: 1`;
@@ -199,8 +187,7 @@
 	    let continueToNewLife = document.getElementById('continue-to-next-life');
 
 	    continueToNewLife.addEventListener('click', function () {
-	      ball.moveX = 2;
-	      ball.moveY = -2;
+	      ball.resetBall();
 	      newLifeButton.remove();
 	      game.showCanvasAndInfo();
 	    });
@@ -245,6 +232,7 @@
 	    levelUpModal.innerHTML = levelUpAppend;
 	    currentLevelInfoBar.innerHTML = `Current Level: ${this.currentLevel}`;
 	  }
+
 
 	  gameWonDom() {
 	    let wonGameAppend = `
@@ -301,6 +289,21 @@
 	    });
 	  }
 
+	  gameWonDom() {
+	    let wonGameAppend = `
+	      <div id="you-won-modal" class="animate2 fadeIn">
+	          <h2 class="level-up">YOU WON!!!</h2>
+	          <p class="you-won-text">We didn't think this was possible. You earned ${this.points} points!</p>
+	          <button id="play-again">Play Again</button>
+	      </div>`;
+
+	    game.hideCanvasAndInfo();
+	    document.body.appendChild(levelUpModal);
+	    levelUpModal.innerHTML = wonGameAppend;
+	    ball.resetBall();
+	    currentLevelInfoBar.innerHTML = `Current Level: 1`;
+	  }
+
 	}
 
 	const game = new Game();
@@ -316,7 +319,7 @@
 	  block.breakBlock(buildAnArray, ball, game, powerupArray);
 	  powerup.hitsPaddle(paddle, ball, powerupArray);
 	  powerup.dropPowerup(powerupArray, context);
-	  game.die(ball, canvas);
+	  game.missPaddle(ball, canvas);
 	  game.levelUpAlert();
 	  requestAnimationFrame(gameLoop);
 	}
@@ -519,6 +522,8 @@
 	        }
 	        if (array[i].special === true) {
 	          powerupArray.push(new Powerup(ball.x, ball.y));
+	          game.points += 25;
+	          this.updatePointsInfoBar(game);
 	          // audioSpecial.play();
 	        }
 	        array.splice(i, 1);
@@ -579,6 +584,7 @@
 	      return ball.slowBall();
 	    } else if (rollDice > .25 && rollDice <= .5) {
 	      console.log('fast');
+
 	      return ball.slowBall();
 	    } else if (rollDice > .5 && rollDice <= .75) {
 	      console.log('long');
@@ -586,6 +592,13 @@
 	    } else if (rollDice > .75) {
 	      console.log('short');
 	      return ball.slowBall();
+	      return ball.fastBall();
+	    } else if (rollDice > .5 && rollDice <= .75) {
+	      console.log('long');
+	      return paddle.longPaddle();
+	    } else if (rollDice > .75) {
+	      console.log('short');
+	      return paddle.shortPaddle();
 	    }
 	  }
 
