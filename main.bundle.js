@@ -81,34 +81,18 @@
 
 	const block = new Block();
 	const paddle = new Paddle(225, 476);
-	const powerup = new Powerup(300, 0);
+	const powerup = new Powerup();
 	const ball = new Ball(paddle.x + 35, paddle.y - 6);
 
 	const newLifeButton = document.createElement('section');
 	const infoBar = document.getElementById('info-bar');
 	const livesLeftInfoBar = document.getElementById('lives-left');
-	const levelUpModal = document.createElement('article');
 	const currentLevelInfoBar = document.getElementById('current-level');
+	const levelUpModal = document.createElement('article');
 	const startButton = document.getElementById('start-btn');
 
 	let buildAnArray = block.buildLevelOne();
 	let powerupArray = [];
-
-	function gameLoop() {
-	  context.clearRect(0, 0, canvas.width, canvas.height);
-	  paddle.draw(context);
-	  ball.draw(context, paddle);
-	  powerup.draw(context);
-	  ball.bounceWalls(canvas.width);
-	  ball.bouncePaddleY(paddle);
-	  ball.bouncePaddleModulation(paddle);
-	  block.buildBlock(buildAnArray, context);
-	  block.breakBlock(buildAnArray, ball, powerupArray);
-	  powerup.hitsPaddle(paddle, ball);
-	  game.die(ball, canvas);
-	  game.levelUpAlert();
-	  requestAnimationFrame(gameLoop);
-	}
 
 	document.addEventListener('keydown', keyHandler);
 
@@ -143,8 +127,7 @@
 
 	  game.startGame(gameLoop);
 	  directionsModal.remove();
-	  canvas.style.display = 'inline-block';
-	  infoBar.style.display = 'flex';
+	  game.showCanvasAndInfo();
 	});
 
 	class Game {
@@ -268,7 +251,14 @@
 	    let levelUpBtn = document.getElementById('continue-to-next-level');
 
 	    levelUpBtn.addEventListener('click', function () {
-	      buildAnArray = block.buildLevelTwo();
+	      buildAnArray = block.buildLevelTwoLeft();
+	      // buildAnArray.push(block.buildLevelTwoRight().split());
+	      for (var i = 0; i < block.buildLevelTwoRight().length; i++) {
+	        buildAnArray.push(block.buildLevelTwoRight()[i]);
+	      }
+
+	      console.log(buildAnArray);
+
 	      levelUpModal.remove();
 	      game.showCanvasAndInfo();
 	    });
@@ -307,6 +297,23 @@
 	}
 
 	const game = new Game();
+
+	function gameLoop() {
+	  context.clearRect(0, 0, canvas.width, canvas.height);
+	  paddle.draw(context);
+	  ball.draw(context, paddle);
+	  // powerup.draw(context)
+	  ball.bounceWalls(canvas.width);
+	  ball.bouncePaddleY(paddle);
+	  ball.bouncePaddleModulation(paddle);
+	  block.buildBlock(buildAnArray, context);
+	  block.breakBlock(buildAnArray, ball, game, powerupArray);
+	  powerup.hitsPaddle(paddle, ball, powerupArray);
+	  powerup.dropPowerup(powerupArray, context);
+	  game.die(ball, canvas);
+	  game.levelUpAlert();
+	  requestAnimationFrame(gameLoop);
+	}
 
 	game.livesCounter();
 
@@ -354,50 +361,83 @@
 	    return buffer;
 	  }
 
+	  buildBlockArray(numberOfBlocksForThisSpecificArray, leftPadding, extraLeftPadding, topPadding, column, row, numberOfSpecialBlocks) {
+
+	    let array = [];
+
+	    for (var i = 0; i < numberOfBlocksForThisSpecificArray; i++) {
+	      this.x = extraLeftPadding + (leftPadding + i % column * 50 * 1.25);
+	      this.y = topPadding + i % row * 10 * 2;
+	      array.push(new Block(this.x, this.y));
+	    }
+	    array = this.randomSpecialBlocks(array);
+	    for (var i = 0; i < numberOfSpecialBlocks; i++) {
+	      array[i].special = true;
+	    }
+	    return array;
+	  }
+
 	  buildLevelOne() {
-	    let levelOneArray = [];
+	    return this.buildBlockArray(24, 6.25, 0, 6, 8, 3, 3);
+	    // let levelOneArray = [];
+	    //
+	    // for (let i = 0; i < 24; i++) {
+	    //   this.x = 6.25 + ((i % 8) * 50) * 1.25;
+	    //   this.y = 6 + ((i % 3) * 10) * 2;
+	    //   levelOneArray.push(new Block(this.x, this.y));
+	    // }
+	    // levelOneArray = this.randomSpecialBlocks(levelOneArray);
+	    // levelOneArray[0].special = true;
+	    // levelOneArray[1].special = true;
+	    // levelOneArray[2].special = true;
+	    // levelOneArray[3].special = true;
+	    // levelOneArray[4].special = true;
+	    // levelOneArray[5].special = true;
+	    // levelOneArray[6].special = true;
+	    // levelOneArray[7].special = true;
+	    // levelOneArray[8].special = true;
 
-	    for (let i = 0; i < 24; i++) {
-	      this.x = 6.25 + i % 8 * 50 * 1.25;
-	      this.y = 6 + i % 3 * 10 * 2;
-	      levelOneArray.push(new Block(this.x, this.y));
-	    }
-	    levelOneArray = this.randomSpecialBlocks(levelOneArray);
-	    levelOneArray[0].special = true;
-	    levelOneArray[1].special = true;
-	    return levelOneArray;
+	    // return levelOneArray;
 	  }
 
-	  buildLevelTwo() {
-	    let levelTwoArray = [];
-
-	    for (let i = 0; i < 12; i++) {
-	      if (i === 7) {
-	        this.unbreakable = true;
-	        this.x = 6.25 + i % 3 * 50 * 1.25;
-	        this.y = 6 + i % 4 * 10 * 2;
-	        levelTwoArray.push(new Block(this.x, this.y, false, this.unbreakable));
-	      } else {
-	        this.x = 6.25 + i % 3 * 50 * 1.25;
-	        this.y = 6 + i % 4 * 10 * 2;
-	        levelTwoArray.push(new Block(this.x, this.y));
-	      }
-	    }
-
-	    for (let i = 0; i < 12; i++) {
-	      if (i === 7) {
-	        this.unbreakable = true;
-	        this.x = 312.5 + (6.25 + i % 3 * 50 * 1.25);
-	        this.y = 6 + i % 4 * 10 * 2;
-	        levelTwoArray.push(new Block(this.x, this.y, false, this.unbreakable));
-	      } else {
-	        this.x = 312.5 + (6.25 + i % 3 * 50 * 1.25);
-	        this.y = 6 + i % 4 * 10 * 2;
-	        levelTwoArray.push(new Block(this.x, this.y));
-	      }
-	    }
-	    return levelTwoArray;
+	  buildLevelTwoLeft() {
+	    console.log('left');
+	    return this.buildBlockArray(12, 6.25, 0, 6, 3, 4, 1, [7]);
 	  }
+
+	  buildLevelTwoRight() {
+	    console.log('right');
+	    return this.buildBlockArray(12, 6.25, 312.5, 6, 3, 4, 1, [7]);
+	  }
+	  //   let levelTwoArray = [];
+	  //
+	  //   for (let i = 0; i < 12; i++) {
+	  //     if (i === 7) {
+	  //       this.unbreakable = true;
+	  //       this.x = 6.25 + ((i % 3) * 50) * 1.25;
+	  //       this.y = 6 + ((i % 4) * 10) * 2;
+	  //       levelTwoArray.push(new Block(this.x, this.y, false, this.unbreakable));
+	  //     } else {
+	  //       this.x = 6.25 + ((i % 3) * 50) * 1.25;
+	  //       this.y = 6 + ((i % 4) * 10) * 2;
+	  //       levelTwoArray.push(new Block(this.x, this.y));
+	  //     }
+	  //   }
+	  //
+	  //   for (let i = 0; i < 12; i++) {
+	  //     if (i === 7) {
+	  //       this.unbreakable = true;
+	  //       this.x = 312.5 + (6.25 + ((i % 3) * 50) * 1.25);
+	  //       this.y = 6 + ((i % 4) * 10) * 2;
+	  //       levelTwoArray.push(new Block(this.x, this.y, false, this.unbreakable));
+	  //     } else {
+	  //       this.x = 312.5 + (6.25 + ((i % 3) * 50) * 1.25);
+	  //       this.y = 6 + ((i % 4) * 10) * 2;
+	  //       levelTwoArray.push(new Block(this.x, this.y));
+	  //     }
+	  //   }
+	  //   return levelTwoArray;
+	  // }
 
 	  buildLevelThree() {
 	    let levelThreeArray = [];
@@ -487,23 +527,36 @@
 	  }
 
 	  breakBlock(array, ball, game, powerupArray) {
+	    var audioNormal = new Audio('lib/sounds/normal-bounce.wav');
+	    var audioUnbreakable = new Audio('lib/sounds/unbreakable-bounce.wav');
+	    var audioSpecial = new Audio('lib/sounds/special-bounce.wav');
+
 	    for (let i = 0; i < array.length; i++) {
 	      if (ball.y + 6 >= array[i].y && ball.y - 6 <= array[i].y + 10 && ball.x <= array[i].x + 50 && ball.x >= array[i].x) {
 	        ball.moveY = -ball.moveY;
-	        if (array[i].unbreakable === true) {
+	        if (array[i].unbreakable === false) {
+	          game.points += 10;
+	          this.updatePointsInfoBar(game);
+	          audioNormal.play();
+	        } else {
+	          audioUnbreakable.play();
 	          return;
 	        }
 	        if (array[i].special === true) {
-	          console.log('works');
 	          powerupArray.push(new Powerup(ball.x, ball.y));
+	          audioSpecial.play();
 	        }
 	        array.splice(i, 1);
-	        console.log('2points:', game.points);
-	        game.points++;
-	        console.log('3points:', game.points);
 	      }
 	    }
 	  }
+
+	  updatePointsInfoBar(game) {
+	    let pointsInfoBar = document.getElementById('points');
+
+	    pointsInfoBar.innerHTML = `Points: ${game.points}`;
+	  }
+
 	}
 
 	module.exports = Block;
@@ -527,11 +580,37 @@
 	    this.y += this.moveY;
 	  }
 
-	  hitsPaddle(paddle, ball) {
-	    if (this.y + 5 >= paddle.y && this.x <= paddle.x + 50 && this.x + 5 >= paddle.x) {
-	      this.y = -10;
-	      this.moveY = 0;
-	      ball.fastBall();
+	  hitsPaddle(paddle, ball, array) {
+	    for (var i = 0; i < array.length; i++) {
+	      if (array[i].y + 5 >= paddle.y && array[i].x <= paddle.x + 50 && array[i].x + 5 >= paddle.x && array[i].y - 5 <= paddle.y + 12) {
+	        array[i].y = -10;
+	        array[i].moveY = 0;
+	        this.chooseRandomPowerup(ball, paddle);
+	      }
+	    }
+	  }
+
+	  dropPowerup(array, context) {
+	    for (var i = 0; i < array.length; i++) {
+	      array[i].draw(context);
+	    }
+	  }
+
+	  chooseRandomPowerup(ball, paddle) {
+	    let rollDice = Math.random();
+
+	    if (rollDice <= .25) {
+	      console.log('slow');
+	      return ball.slowBall();
+	    } else if (rollDice > .25 && rollDice <= .5) {
+	      console.log('fast');
+	      return ball.fastBall();
+	    } else if (rollDice > .5 && rollDice <= .75) {
+	      console.log('long');
+	      return paddle.longPaddle();
+	    } else if (rollDice > .75) {
+	      console.log('short');
+	      return paddle.shortPaddle();
 	    }
 	  }
 
@@ -730,6 +809,7 @@
 	  }
 
 	  fastBall() {
+	    console.log('yo');
 	    this.moveX = this.moveX * 2;
 	    this.moveY = this.moveY * 2;
 	  }
