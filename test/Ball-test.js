@@ -3,6 +3,7 @@ const { assert } = require('chai');
 const Ball = require('../lib/Ball.js');
 const Paddle = require('../lib/Paddle.js');
 const Block = require('../lib/Block.js')
+// const Game = require('../lib/Game.js')
 
 
 describe('ball unit testing', () => {
@@ -90,6 +91,8 @@ describe('ball unit testing', () => {
   it('should bounce off bricks', () => {
     let ball = new Ball(300, 300);
     let block = new Block(10, 10);
+    // let game = new Game();
+
     let array = [block];
 
     ball.initiateVelocity();
