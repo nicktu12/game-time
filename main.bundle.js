@@ -139,6 +139,7 @@
 	      if (this.livesRemaining > 0) {
 	        this.useNextLife(ball);
 	      } else if (this.livesRemaining === 0) {
+	        this.lostThreeLives();
 	        this.lostGame();
 	      }
 	    }
@@ -186,8 +187,6 @@
 	    let continueToNewLife = document.getElementById('continue-to-next-life');
 
 	    continueToNewLife.addEventListener('click', function () {
-	      // ball.moveX = 2;
-	      // ball.moveY = -2;
 	      ball.resetBall();
 	      newLifeButton.remove();
 	      game.showCanvasAndInfo();
@@ -232,6 +231,22 @@
 	    document.body.appendChild(levelUpModal);
 	    levelUpModal.innerHTML = levelUpAppend;
 	    currentLevelInfoBar.innerHTML = `Current Level: ${this.currentLevel}`;
+	  }
+
+
+	  gameWonDom() {
+	    let wonGameAppend = `
+	      <div id="you-won-modal" class="animate2 fadeIn">
+	          <h2 class="level-up">YOU WON!!!</h2>
+	          <p class="you-won-text">We didn't think this was possible. You earned ${this.points} points!</p>
+	          <button id="play-again">Play Again</button>
+	      </div>`;
+
+	    game.hideCanvasAndInfo();
+	    document.body.appendChild(levelUpModal);
+	    levelUpModal.innerHTML = wonGameAppend;
+	    ball.resetBall();
+	    currentLevelInfoBar.innerHTML = `Current Level: 1`;
 	  }
 
 	  continueToLevelTwo() {
@@ -509,7 +524,6 @@
 	          powerupArray.push(new Powerup(ball.x, ball.y));
 	          game.points += 25;
 	          this.updatePointsInfoBar(game);
-
 	          // audioSpecial.play();
 	        }
 	        array.splice(i, 1);
@@ -570,6 +584,14 @@
 	      return ball.slowBall();
 	    } else if (rollDice > .25 && rollDice <= .5) {
 	      console.log('fast');
+
+	      return ball.slowBall();
+	    } else if (rollDice > .5 && rollDice <= .75) {
+	      console.log('long');
+	      return ball.slowBall();
+	    } else if (rollDice > .75) {
+	      console.log('short');
+	      return ball.slowBall();
 	      return ball.fastBall();
 	    } else if (rollDice > .5 && rollDice <= .75) {
 	      console.log('long');
