@@ -316,7 +316,7 @@
 	  ball.draw(context, paddle);
 	  ball.bounceWalls(canvas.width);
 	  ball.bouncePaddleY(paddle);
-	  ball.bouncePaddleModulation(paddle);
+	  ball.bouncePaddleX(paddle);
 	  block.buildBlock(buildAnArray, context);
 	  block.breakBlock(buildAnArray, ball, game, powerupArray);
 	  powerup.hitsPaddle(paddle, ball, powerupArray, game, block, context);
@@ -865,50 +865,28 @@
 	    }
 	  }
 
-	  bouncePaddleModulation(paddle) {
-	    let paddleRight = paddle.x + paddle.width;
+	  bounceModulator(leftEnd, rightEnd, negativeXModulator, positiveXModulator, paddle) {
 	    let paddleLeft = paddle.x;
 	    let paddleQuintent = paddle.width / 5;
+	    let maxSpeed = 4;
+	    let ballRadius = 6;
 
-	    if (this.y === paddle.y - 6 && this.x + 6 >= paddleLeft + paddleQuintent * 3 && this.x - 6 <= paddleLeft + paddleQuintent * 4) {
-	      if (this.moveX < 4 || this.moveX > -4) {
+	    if (this.y === paddle.y - ballRadius && this.x + ballRadius >= paddleLeft + paddleQuintent * leftEnd && this.x - ballRadius <= paddleLeft + paddleQuintent * rightEnd) {
+	      if (this.moveX < maxSpeed || this.moveX > -maxSpeed) {
 	        if (this.moveX < 0) {
-	          this.moveX *= 0.9;
+	          this.moveX *= negativeXModulator;
 	        } else {
-	          this.moveX *= 1.1;
+	          this.moveX *= positiveXModulator;
 	        }
 	      }
 	    }
+	  }
 
-	    if (this.y === paddle.y - 6 && this.x + 6 >= paddleLeft + paddleQuintent * 4 && this.x - 6 <= paddleRight) {
-	      if (this.moveX < 4 || this.moveX > -4) {
-	        if (this.moveX < 0) {
-	          this.moveX *= 0.7;
-	        } else {
-	          this.moveX *= 1.3;
-	        }
-	      }
-	    }
-
-	    if (this.y === paddle.y - 6 && this.x >= paddleLeft + paddleQuintent * 1 && this.x <= paddleLeft + paddleQuintent * 2) {
-	      if (this.moveX < 4 || this.moveX > -4) {
-	        if (this.moveX > 0) {
-	          this.moveX *= 0.9;
-	        } else {
-	          this.moveX *= 1.1;
-	        }
-	      }
-	    }
-
-	    if (this.y === paddle.y - 6 && this.x >= paddleLeft && this.x <= paddleLeft + 10) {
-	      if (this.moveX < 4 || this.moveX > -4) {
-	        if (this.moveX > 0) {
-	          this.moveX *= 0.7;
-	        } else {
-	          this.moveX *= 1.3;
-	        }
-	      }
-	    }
+	  bouncePaddleX(paddle) {
+	    this.bounceModulator(3, 4, 0.9, 1.3, paddle);
+	    this.bounceModulator(4, 5, 0.7, 1.3, paddle);
+	    this.bounceModulator(1, 2, 0.9, 1.1, paddle);
+	    this.bounceModulator(2, 3, 0.7, 1.3, paddle);
 	  }
 
 	  slowBall() {
