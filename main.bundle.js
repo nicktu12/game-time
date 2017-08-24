@@ -139,7 +139,6 @@
 	      if (this.livesRemaining > 0) {
 	        this.useNextLife(ball);
 	      } else if (this.livesRemaining === 0) {
-	        this.lostThreeLives();
 	        this.lostGame();
 	      }
 	    }
@@ -151,6 +150,8 @@
 	    this.livesCounter();
 	    this.hideCanvasAndInfo();
 	    document.body.appendChild(newLifeButton);
+	    game.points -= 50;
+	    block.updatePointsInfoBar(game);
 	  }
 
 	  useNextLife(ball) {
@@ -166,13 +167,13 @@
 
 	  lostGame() {
 	    newLifeButton.innerHTML = `
-	    <div id="lost-life-modal" class="animate2 fadeIn">
+	    <div id="lost-game-modal" class="animate2 fadeIn">
 	        <h2 class="lost-life">GAME OVER</h2>
 	        <p class="game-over-text">You are dead. But you did score ${this.points} points!</p>
 	        <button id="play-again">Play Again</button>
 	    </div>`;
 	    currentLevelInfoBar.innerHTML = `Current Level: 1`;
-	    let gameOverModal = document.getElementById('lost-life-modal');
+	    let gameOverModal = document.getElementById('lost-game-modal');
 	    let playAgainBtn = document.getElementById('play-again');
 
 	    playAgainBtn.addEventListener('click', () => {
@@ -218,6 +219,7 @@
 	    this.currentLevel++;
 	    this.levelUpDom();
 	    ball.resetBall();
+	    paddle.resetPaddle();
 	  }
 
 	  levelUpDom() {
@@ -231,22 +233,6 @@
 	    document.body.appendChild(levelUpModal);
 	    levelUpModal.innerHTML = levelUpAppend;
 	    currentLevelInfoBar.innerHTML = `Current Level: ${this.currentLevel}`;
-	  }
-
-
-	  gameWonDom() {
-	    let wonGameAppend = `
-	      <div id="you-won-modal" class="animate2 fadeIn">
-	          <h2 class="level-up">YOU WON!!!</h2>
-	          <p class="you-won-text">We didn't think this was possible. You earned ${this.points} points!</p>
-	          <button id="play-again">Play Again</button>
-	      </div>`;
-
-	    game.hideCanvasAndInfo();
-	    document.body.appendChild(levelUpModal);
-	    levelUpModal.innerHTML = wonGameAppend;
-	    ball.resetBall();
-	    currentLevelInfoBar.innerHTML = `Current Level: 1`;
 	  }
 
 	  continueToLevelTwo() {
@@ -379,9 +365,10 @@
 	      levelOneArray.push(new Block(this.x, this.y));
 	    }
 	    levelOneArray = this.randomSpecialBlocks(levelOneArray);
-	    levelOneArray[0].special = true;
-	    levelOneArray[1].special = true;
-	    levelOneArray[2].special = true;
+
+	    for (var i = 0; i < 20; i++) {
+	      levelOneArray[i].special = true;
+	    }
 
 	    return levelOneArray;
 	  }
@@ -522,8 +509,9 @@
 	        }
 	        if (array[i].special === true) {
 	          powerupArray.push(new Powerup(ball.x, ball.y));
-	          game.points += 25;
+	          game.points += 15;
 	          this.updatePointsInfoBar(game);
+
 	          // audioSpecial.play();
 	        }
 	        array.splice(i, 1);
@@ -562,7 +550,7 @@
 
 	  hitsPaddle(paddle, ball, array) {
 	    for (var i = 0; i < array.length; i++) {
-	      if (array[i].y + 5 >= paddle.y && array[i].x <= paddle.x + 50 && array[i].x + 5 >= paddle.x && array[i].y - 5 <= paddle.y + 12) {
+	      if (array[i].y + 5 >= paddle.y && array[i].x <= paddle.x + paddle.width && array[i].x + 5 >= paddle.x && array[i].y - 5 <= paddle.y + 12) {
 	        array[i].y = -10;
 	        array[i].moveY = 0;
 	        this.chooseRandomPowerup(ball, paddle);
@@ -581,18 +569,10 @@
 
 	    if (rollDice <= .25) {
 	      console.log('slow');
-	      return ball.slowBall();
+	      return paddle.longPaddle();
 	    } else if (rollDice > .25 && rollDice <= .5) {
 	      console.log('fast');
-
-	      return ball.slowBall();
-	    } else if (rollDice > .5 && rollDice <= .75) {
-	      console.log('long');
-	      return ball.slowBall();
-	    } else if (rollDice > .75) {
-	      console.log('short');
-	      return ball.slowBall();
-	      return ball.fastBall();
+	      return paddle.shortPaddle();
 	    } else if (rollDice > .5 && rollDice <= .75) {
 	      console.log('long');
 	      return paddle.longPaddle();
@@ -676,6 +656,10 @@
 	    this.width = this.width * .4;
 	  }
 
+	  resetPaddle() {
+	    this.width = 50;
+	  }
+
 	}
 
 	module.exports = Paddle;
@@ -713,8 +697,8 @@
 
 	  initiateVelocity() {
 	    if (this.moveX === 0) {
-	      this.moveX = 2;
-	      this.moveY = -2;
+	      this.moveX = this.moveX + 2;
+	      this.moveY = this.moveY - 2;
 	    }
 	  }
 
@@ -734,10 +718,11 @@
 	  }
 
 	  bouncePaddleY(paddle) {
-	    let paddleRight = paddle.x + 50;
+	    let paddleRight = paddle.x + paddle.width;
 	    let paddleLeft = paddle.x;
 
-	    if (this.y === paddle.y - 6 && this.x > paddleLeft && this.x < paddleRight) {
+	    if (this.y === paddle.y - 6 && this.x + 6 > paddleLeft && this.x - 6 < paddleRight) {
+	      console.log('hit');
 	      if (this.moveY > 4 || this.moveY < -4) {
 	        this.moveY = -this.moveY;
 	      } else {
@@ -747,10 +732,11 @@
 	  }
 
 	  bouncePaddleModulation(paddle) {
-	    let paddleRight = paddle.x + 50;
+	    let paddleRight = paddle.x + paddle.width;
 	    let paddleLeft = paddle.x;
+	    let paddleQuintent = paddle.width / 5;
 
-	    if (this.y === paddle.y - 6 && this.x > paddleLeft + 30 && this.x < paddleLeft + 40) {
+	    if (this.y === paddle.y - 6 && this.x + 6 > paddleLeft + paddleQuintent * 3 && this.x - 6 < paddleLeft + paddleQuintent * 4) {
 	      if (this.moveX < 4 || this.moveX > -4) {
 	        if (this.moveX < 0) {
 	          this.moveX = this.moveX * .9;
@@ -760,7 +746,7 @@
 	      }
 	    }
 
-	    if (this.y === paddle.y - 6 && this.x > paddleLeft + 40 && this.x < paddleRight) {
+	    if (this.y === paddle.y - 6 && this.x + 6 > paddleLeft + paddleQuintent * 4 && this.x - 6 < paddleRight) {
 	      if (this.moveX < 4 || this.moveX > -4) {
 	        if (this.moveX < 0) {
 	          this.moveX = this.moveX * .7;
@@ -770,7 +756,7 @@
 	      }
 	    }
 
-	    if (this.y === paddle.y - 6 && this.x > paddleLeft + 10 && this.x < paddleLeft + 20) {
+	    if (this.y === paddle.y - 6 && this.x > paddleLeft + paddleQuintent * 1 && this.x < paddleLeft + paddleQuintent * 2) {
 	      if (this.moveX < 4 || this.moveX > -4) {
 	        if (this.moveX > 0) {
 	          this.moveX = this.moveX * .9;
