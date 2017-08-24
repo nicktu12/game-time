@@ -67,4 +67,4 @@ Each javascript file in your project should have it’s own test file e.g. if yo
 
 ### Win Game
 
-![image](https://user-images.githubusercontent.com/25447342/29677228-afe44976-88b7-11e7-990f-09ef0ca65c5a.png)
+![image](https://user-images.githubusercontent.com/25447342/29677826-9d57c7e0-88b9-11e7-9cfe-65de1e83e91d.png)
