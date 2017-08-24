@@ -43,11 +43,11 @@ Each javascript file in your project should have it’s own test file e.g. if yo
 
 ### Level 2
 
-![image](https://user-images.githubusercontent.com/25447342/29676247-c6deb60a-88b4-11e7-8581-63b204128792.png)
+![image](https://user-images.githubusercontent.com/25447342/29676449-5750946a-88b5-11e7-80ef-2ad24a62b4b1.png)
 
 ### Level 3
 
-![image](https://user-images.githubusercontent.com/25447342/29676287-e1751d6a-88b4-11e7-9ad3-072673706f4a.png)
+![image](https://user-images.githubusercontent.com/25447342/29676473-6d29810c-88b5-11e7-9bc8-903113ab0a45.png)
 
 ### Level 4
 
