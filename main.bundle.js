@@ -81,34 +81,20 @@
 
 	const block = new Block();
 	const paddle = new Paddle(225, 476);
-	const powerup = new Powerup(300, 0);
+	const powerup = new Powerup();
 	const ball = new Ball(paddle.x + 35, paddle.y - 6);
 
 	const newLifeButton = document.createElement('section');
 	const infoBar = document.getElementById('info-bar');
 	const livesLeftInfoBar = document.getElementById('lives-left');
-	const levelUpModal = document.createElement('article');
 	const currentLevelInfoBar = document.getElementById('current-level');
+	const levelUpModal = document.createElement('article');
 	const startButton = document.getElementById('start-btn');
+
+	let playAgainBtn = document.getElementById('play-again');
 
 	let buildAnArray = block.buildLevelOne();
 	let powerupArray = [];
-
-	function gameLoop() {
-	  context.clearRect(0, 0, canvas.width, canvas.height);
-	  paddle.draw(context);
-	  ball.draw(context, paddle);
-	  powerup.draw(context);
-	  ball.bounceWalls(canvas.width);
-	  ball.bouncePaddleY(paddle);
-	  ball.bouncePaddleModulation(paddle);
-	  block.buildBlock(buildAnArray, context);
-	  block.breakBlock(buildAnArray, ball, powerupArray);
-	  powerup.hitsPaddle(paddle, ball);
-	  game.die(ball, canvas);
-	  game.levelUpAlert();
-	  requestAnimationFrame(gameLoop);
-	}
 
 	document.addEventListener('keydown', keyHandler);
 
@@ -143,8 +129,7 @@
 
 	  game.startGame(gameLoop);
 	  directionsModal.remove();
-	  canvas.style.display = 'inline-block';
-	  infoBar.style.display = 'flex';
+	  game.showCanvasAndInfo();
 	});
 
 	class Game {
@@ -186,14 +171,28 @@
 	          </div>`;
 	        this.nextLife(ball);
 	      } else if (this.livesRemaining === 0) {
-	        newLifeButton.innerHTML = `
-	        <div id="lost-life-modal" class="animate2 fadeIn">
-	            <h2 class="lost-life">GAME OVER</h2>
-	            <p class="game-over-text">You are dead.</p>
-	            <button id="play-again">Play Again</button>
-	        </div>`;
+	        this.lostThreeLives();
 	      }
 	    }
+	  }
+
+	  lostThreeLives() {
+	    newLifeButton.innerHTML = `
+	    <div id="lost-life-modal" class="animate2 fadeIn">
+	        <h2 class="lost-life">GAME OVER</h2>
+	        <p class="game-over-text">You are dead. You scored ${this.points} points!</p>
+	        <button id="play-again">Play Again</button>
+	    </div>`;
+	    currentLevelInfoBar.innerHTML = `Current Level: 1`;
+	    let gameOverModal = document.getElementById('lost-life-modal');
+	    let playAgainBtn = document.getElementById('play-again');
+
+	    playAgainBtn.addEventListener('click', () => {
+	      game.points = 0;
+	      buildAnArray = block.buildLevelOne();
+	      gameOverModal.remove();
+	      game.showCanvasAndInfo();
+	    });
 	  }
 
 	  nextLife(ball) {
@@ -208,9 +207,7 @@
 	  }
 
 	  livesCounter() {
-	    // if (this.livesRemaining === 0) {
 	    livesLeftInfoBar.innerHTML = `Lives Left: ${this.livesRemaining}`;
-	    //}
 	  }
 
 	  levelUpAlert() {
@@ -253,7 +250,7 @@
 	    let wonGameAppend = `
 	      <div id="you-won-modal" class="animate2 fadeIn">
 	          <h2 class="level-up">YOU WON!!!</h2>
-	          <p class="you-won-text">We didn't think this was possible.</p>
+	          <p class="you-won-text">We didn't think this was possible. You earned ${this.points} points!</p>
 	          <button id="play-again">Play Again</button>
 	      </div>`;
 
@@ -307,6 +304,22 @@
 	}
 
 	const game = new Game();
+
+	function gameLoop() {
+	  context.clearRect(0, 0, canvas.width, canvas.height);
+	  paddle.draw(context);
+	  ball.draw(context, paddle);
+	  ball.bounceWalls(canvas.width);
+	  ball.bouncePaddleY(paddle);
+	  ball.bouncePaddleModulation(paddle);
+	  block.buildBlock(buildAnArray, context);
+	  block.breakBlock(buildAnArray, ball, game, powerupArray);
+	  powerup.hitsPaddle(paddle, ball, powerupArray);
+	  powerup.dropPowerup(powerupArray, context);
+	  game.die(ball, canvas);
+	  game.levelUpAlert();
+	  requestAnimationFrame(gameLoop);
+	}
 
 	game.livesCounter();
 
@@ -365,6 +378,8 @@
 	    levelOneArray = this.randomSpecialBlocks(levelOneArray);
 	    levelOneArray[0].special = true;
 	    levelOneArray[1].special = true;
+	    levelOneArray[2].special = true;
+
 	    return levelOneArray;
 	  }
 
@@ -487,23 +502,36 @@
 	  }
 
 	  breakBlock(array, ball, game, powerupArray) {
+	    // var audioNormal = new Audio('lib/sounds/normal-bounce.wav');
+	    // var audioUnbreakable = new Audio('lib/sounds/unbreakable-bounce.wav');
+	    // var audioSpecial = new Audio('lib/sounds/special-bounce.wav');
+
 	    for (let i = 0; i < array.length; i++) {
 	      if (ball.y + 6 >= array[i].y && ball.y - 6 <= array[i].y + 10 && ball.x <= array[i].x + 50 && ball.x >= array[i].x) {
 	        ball.moveY = -ball.moveY;
-	        if (array[i].unbreakable === true) {
+	        if (array[i].unbreakable === false) {
+	          game.points += 10;
+	          this.updatePointsInfoBar(game);
+	          // comment out 184, 185 for Ball-test.js and Block-test.js
+	        } else {
+	          // audioUnbreakable.play();
 	          return;
 	        }
 	        if (array[i].special === true) {
-	          console.log('works');
 	          powerupArray.push(new Powerup(ball.x, ball.y));
+	          // audioSpecial.play();
 	        }
 	        array.splice(i, 1);
-	        console.log('2points:', game.points);
-	        game.points++;
-	        console.log('3points:', game.points);
 	      }
 	    }
 	  }
+
+	  updatePointsInfoBar(game) {
+	    let pointsInfoBar = document.getElementById('points');
+
+	    pointsInfoBar.innerHTML = `Points: ${game.points}`;
+	  }
+
 	}
 
 	module.exports = Block;
@@ -527,11 +555,37 @@
 	    this.y += this.moveY;
 	  }
 
-	  hitsPaddle(paddle, ball) {
-	    if (this.y + 5 >= paddle.y && this.x <= paddle.x + 50 && this.x + 5 >= paddle.x) {
-	      this.y = -10;
-	      this.moveY = 0;
-	      ball.fastBall();
+	  hitsPaddle(paddle, ball, array) {
+	    for (var i = 0; i < array.length; i++) {
+	      if (array[i].y + 5 >= paddle.y && array[i].x <= paddle.x + 50 && array[i].x + 5 >= paddle.x && array[i].y - 5 <= paddle.y + 12) {
+	        array[i].y = -10;
+	        array[i].moveY = 0;
+	        this.chooseRandomPowerup(ball, paddle);
+	      }
+	    }
+	  }
+
+	  dropPowerup(array, context) {
+	    for (var i = 0; i < array.length; i++) {
+	      array[i].draw(context);
+	    }
+	  }
+
+	  chooseRandomPowerup(ball, paddle) {
+	    let rollDice = Math.random();
+
+	    if (rollDice <= .25) {
+	      console.log('slow');
+	      return ball.slowBall();
+	    } else if (rollDice > .25 && rollDice <= .5) {
+	      console.log('fast');
+	      return ball.slowBall();
+	    } else if (rollDice > .5 && rollDice <= .75) {
+	      console.log('long');
+	      return ball.slowBall();
+	    } else if (rollDice > .75) {
+	      console.log('short');
+	      return ball.slowBall();
 	    }
 	  }
 
