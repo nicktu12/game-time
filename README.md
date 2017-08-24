@@ -63,8 +63,8 @@ Each javascript file in your project should have it’s own test file e.g. if yo
 
 ### Lose Game
 
-![image](https://user-images.githubusercontent.com/25447342/29676391-353f0a5a-88b5-11e7-9190-79f6e64cb07a.png)
+![image](https://user-images.githubusercontent.com/25447342/29677187-95ea264e-88b7-11e7-8fd4-887699aa4add.png)
 
 ### Win Game
 
-![image](https://user-images.githubusercontent.com/25447342/29676338-034e27c4-88b5-11e7-9f09-72983f6f3a26.png)
+![image](https://user-images.githubusercontent.com/25447342/29677826-9d57c7e0-88b9-11e7-9cfe-65de1e83e91d.png)
