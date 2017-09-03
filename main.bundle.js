@@ -643,16 +643,21 @@
 	    if (rollDice <= .25) {
 	      if (paddle.width === 50) {
 	        this.currentPowerupAlpha = 1;
+	        this.currentTextSize = 1;
 	        this.currentPowerup = 'Short Paddle';
 	        return paddle.shortPaddle();
 	      } else {
 	        this.currentPowerupAlpha = 1;
+	        this.currentTextSize = 1;
+
 	        this.currentPowerup = 'Long Paddle';
 	        return paddle.resetPaddle();
 	      }
 	    } else if (rollDice > .25 && rollDice <= .5) {
 	      if (paddle.width === 50) {
 	        this.currentPowerupAlpha = 1;
+	        this.currentTextSize = 1;
+
 	        this.currentPowerup = 'Long Paddle';
 	        return paddle.longPaddle();
 	      } else {
@@ -664,15 +669,21 @@
 	      if (ball.moveY >= 1 || ball.moveY <= -1) {
 	        if (ball.moveX >= 1 || ball.moveX <= -1) {
 	          this.currentPowerupAlpha = 1;
+	          this.currentTextSize = 1;
+
 	          this.currentPowerup = 'Slow Ball';
 	          return ball.slowBall();
 	        } else {
 	          this.currentPowerupAlpha = 1;
+	          this.currentTextSize = 1;
+
 	          this.currentPowerup = 'Fast Ball';
 	          return ball.fastBall();
 	        }
 	      } else {
 	        this.currentPowerupAlpha = 1;
+	        this.currentTextSize = 1;
+
 	        this.currentPowerup = 'Fast Ball';
 	        return ball.fastBall();
 	      }
@@ -680,15 +691,21 @@
 	      if (ball.moveY <= 6 || ball.moveY >= -6) {
 	        if (ball.moveX <= 6 || ball.moveX >= -6) {
 	          this.currentPowerupAlpha = 1;
+	          this.currentTextSize = 1;
+
 	          this.currentPowerup = 'Fast Ball';
 	          return ball.fastBall();
 	        } else {
 	          this.currentPowerupAlpha = 1;
+	          this.currentTextSize = 1;
+
 	          this.currentPowerup = 'Slow Ball';
 	          return ball.slowBall();
 	        }
 	      } else {
 	        this.currentPowerupAlpha = 1;
+	        this.currentTextSize = 1;
+
 	        this.currentPowerup = 'Slow Ball';
 	        return ball.slowBall();
 	      }
@@ -698,7 +715,8 @@
 	  drawPowerupText(context) {
 	    let decrementer = .01;
 
-	    context.font = '20px Ubuntu';
+	    this.currentTextSize += decrementer * 100;
+	    context.font = `${this.currentTextSize}px Ubuntu`;
 	    context.textAlign = 'center';
 	    context.textBaseline = 'middle';
 	    this.currentPowerupAlpha -= decrementer;
@@ -740,7 +758,7 @@
 	  }
 
 	  draw(context) {
-	    context.fillStyle = '#33ccff';
+	    context.fillStyle = '#33CCFF';
 	    context.fillRect(this.x, this.y, this.width, this.height);
 	  }
 
@@ -768,11 +786,11 @@
 	  }
 
 	  longPaddle() {
-	    this.width *= 1.75;
+	    this.width = this.width * 1.75;
 	  }
 
 	  shortPaddle() {
-	    this.width *= 0.4;
+	    this.width = this.width * .4;
 	  }
 
 	  resetPaddle() {
