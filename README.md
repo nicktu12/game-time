@@ -32,6 +32,14 @@ To this end, make sure to include sufficient UX to allow the user to fully inter
 
 Each javascript file in your project should have it’s own test file e.g. if you have a MasterChief.js class file, all the tests for that class should be located in MasterChief-test.js
 
+#### Built with: 
+* HTML
+* CSS
+* JavaScript
+* Canvas
+* Chai
+* Mocha
+* Webpack
 
 ### Directions Screen
 
