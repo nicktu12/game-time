@@ -101,11 +101,13 @@
 	});
 
 	canvas.addEventListener('click', () => {
+	  console.log('hey');
 	  if (paddle.ammo > 0 && ball.moveY !== 0) {
 	    console.log('up');
 	    bulletArray.push(new Bullet(paddle.x + paddle.width / 2, paddle.y));
 	    paddle.ammo--;
 	  }
+	  console.log(paddle.ammo, ball.moveY);
 	  ball.initiateVelocity();
 	});
 
@@ -283,16 +285,17 @@
 	  }
 
 	  gameWon() {
-	    let playAgainBtn = document.getElementById('play-again');
 
 	    let levelUpAppend = `<div id="level-up-modal" class="animate2 fadeIn">
 	        <h2 class="level-up">Hi scores!</h2>
 	        <p class="level-up-text">On to the next challenge! Click the button to start level ${this.currentLevel}.</p>
-	        <button id="continue-to-next-level">Continue</button>
+	        <button id="play-again">Continue</button>
 	        </div>`;
 
 	    document.body.appendChild(levelUpModal);
 	    levelUpModal.innerHTML = levelUpAppend;
+
+	    let playAgainBtn = document.getElementById('play-again');
 
 	    document.getElementById('win-sound').volume = 0.5;
 	    document.getElementById('win-sound').play();
@@ -323,6 +326,11 @@
 	    ball.resetBall();
 	  }
 
+	  extraLife() {
+	    this.livesRemaining += 1;
+	    game.livesCounter();
+	  }
+
 	}
 
 	const game = new Game();
@@ -336,7 +344,7 @@
 	  ball.bouncePaddleX(paddle);
 	  block.buildBlock(buildAnArray, context);
 	  block.breakBlock(buildAnArray, ball, game, powerupArray);
-	  block.bulletBlock(buildAnArray, bulletArray);
+	  block.bulletBlock(buildAnArray, bulletArray, powerupArray, game);
 	  powerup.hitsPaddle(paddle, ball, powerupArray, game, block, context);
 	  powerup.dropPowerup(powerupArray, context);
 	  powerup.drawPowerupText(context);
@@ -547,7 +555,7 @@
 	      }
 	    }
 
-	    levelFourArray = this.randomSpecialBlocks(levelFourArray, 12);
+	    levelFourArray = this.randomSpecialBlocks(levelFourArray, 7);
 	    return levelFourArray;
 	  }
 
@@ -568,7 +576,8 @@
 	  breakBlock(array, ball, game, powerupArray) {
 	    for (let i = 0; i < array.length; i++) {
 	      if (ball.y + ball.radius >= array[i].y && ball.y - ball.radius <= array[i].y + array[i].height && ball.x - ball.radius <= array[i].x + array[i].width && ball.x + ball.radius >= array[i].x) {
-	        ball.moveY = -ball.moveY;
+	        this.whatSide(array[i], ball, 4);
+	        // ball.moveY = -ball.moveY;
 	        if (array[i].unbreakable === false) {
 	          game.points += 10;
 	          this.updatePointsInfoBar(game);
@@ -593,11 +602,81 @@
 	    }
 	  }
 
-	  bulletBlock(blockArray, bulletArray) {
+	  whatSide(array, ball, buffer) {
+	    if (ball.x <= array.x && ball.y >= array.y - buffer && ball.y <= array.y + array.height + buffer) {
+	      // if (ball.y <= array.y
+	      //     && ball.x >= array.x - 6
+	      //     && ball.x <= array.x + array.width + buffer) {
+	      //   console.log('left & top')
+	      //   ball.moveY = -ball.moveY;
+	      //   ball.moveX = -ball.moveX;
+	      //   return;
+	      // }
+	      // if (ball.y <= array.y + array.height
+	      //     && ball.x >= array.x - 6
+	      //     && ball.x <= array.x + array.width + buffer) {
+	      //   console.log('left & bottom')
+	      //   ball.moveY = -ball.moveY;
+	      //   ball.moveX = -ball.moveX;
+	      //   return;
+	      // }
+	      console.log('left');
+	      ball.moveX = -ball.moveX;
+	    }
+	    if (ball.x >= array.x + array.width && ball.y >= array.y - 6 && ball.y <= array.y + array.height + buffer) {
+	      // if (ball.y <= array.y
+	      //     && ball.x >= array.x - 6
+	      //     && ball.x <= array.x + array.width + buffer) {
+	      //   console.log('right & top')
+	      //   ball.moveY = -ball.moveY;
+	      //   ball.moveX = -ball.moveX;
+	      //   return;
+	      //   }
+	      // if (ball.y <= array.y + array.height
+	      //     && ball.x >= array.x - 6
+	      //     && ball.x <= array.x + array.width + buffer) {
+	      //   console.log('right & bottom')
+	      //   ball.moveY = -ball.moveY;
+	      //   ball.moveX = -ball.moveX;
+	      //   return;
+	      //   }
+	      console.log('right');
+	      ball.moveX = -ball.moveX;
+	    }
+	    if (ball.y <= array.y && ball.x >= array.x - 6 && ball.x <= array.x + array.width + buffer) {
+	      ball.moveY = -ball.moveY;
+	      console.log('top');
+	    }
+	    if (ball.y >= array.y + array.height && ball.x >= array.x - 6 && ball.x <= array.x + array.width + buffer) {
+	      ball.moveY = -ball.moveY;
+	      console.log('bottom');
+	    }
+	  }
+
+	  bulletBlock(blockArray, bulletArray, powerupArray, game) {
 	    for (var i = 0; i < blockArray.length; i++) {
-	      for (var j = 0; j < bulletArray.length; i++) {
+	      for (var j = 0; j < bulletArray.length; j++) {
 	        if (bulletArray[j].y + bulletArray[j].radius >= blockArray[i].y && bulletArray[j].y - bulletArray[j].radius <= blockArray[i].y + blockArray[i].height && bulletArray[j].x - bulletArray[j].radius <= blockArray[i].x + blockArray[i].width && bulletArray[j].x + bulletArray[j].radius >= blockArray[i].x) {
-	          console.log('hey');
+	          if (blockArray[i].unbreakable === false) {
+	            game.points += 10;
+	            this.updatePointsInfoBar(game);
+	            document.getElementById('normal-bounce-sound').volume = 0.5;
+	            document.getElementById('normal-bounce-sound').play();
+	            blockArray.splice(i, 1);
+	            bulletArray[j].y = -100;
+	          } else {
+	            bulletArray[j].y = -100;
+	          }
+	          if (blockArray[i].special === true) {
+	            console.log('bul block');
+	            powerupArray.push(new Powerup(blockArray[i].x + 5, blockArray[i].y));
+	            game.points += 15;
+	            this.updatePointsInfoBar(game);
+	            document.getElementById('special-bounce-sound').volume = 0.8;
+	            document.getElementById('special-bounce-sound').play();
+	            blockArray.splice(i, 1);
+	            bulletArray[j].y = -100;
+	          }
 	        }
 	      }
 	    }
@@ -605,7 +684,6 @@
 
 	  updatePointsInfoBar(game) {
 	    let pointsInfoBar = document.getElementById('points');
-
 	    pointsInfoBar.innerHTML = `Points: ${game.points}`;
 	  }
 
@@ -653,7 +731,7 @@
 	        array[i].moveY = 0;
 	        game.points += 25;
 	        block.updatePointsInfoBar(game);
-	        this.chooseRandomPowerup(ball, paddle);
+	        this.chooseRandomPowerup(ball, paddle, game);
 	        document.getElementById('powerup-paddle').volume = .1;
 	        document.getElementById('powerup-paddle').play();
 	      }
@@ -666,10 +744,10 @@
 	    }
 	  }
 
-	  chooseRandomPowerup(ball, paddle) {
+	  chooseRandomPowerup(ball, paddle, game) {
 	    let rollDice = Math.random();
 
-	    if (rollDice <= .25) {
+	    if (rollDice <= .2) {
 	      if (paddle.width === 50) {
 	        this.currentPowerupAlpha = 1;
 	        this.currentTextSize = 1;
@@ -681,7 +759,7 @@
 	        this.currentPowerup = 'Long Paddle';
 	        return paddle.resetPaddle();
 	      }
-	    } else if (rollDice > .25 && rollDice <= .5) {
+	    } else if (rollDice > .2 && rollDice <= .4) {
 	      if (paddle.width === 50) {
 	        this.currentPowerupAlpha = 1;
 	        this.currentTextSize = 1;
@@ -693,61 +771,27 @@
 	        this.currentPowerup = 'Short Paddle';
 	        return paddle.resetPaddle();
 	      }
-	    } else if (rollDice > .5 && rollDice <= .75) {
+	    } else if (rollDice > .4 && rollDice <= .6) {
 	      this.currentPowerupAlpha = 1;
 	      this.currentTextSize = 1;
 	      this.currentPowerup = 'Fast Ball';
 	      return ball.fastBall();
-	      // if (ball.moveY >= 1 || ball.moveY <= -1) {
-	      //   if (ball.moveX >= 1 || ball.moveX <= -1) {
-	      //     this.currentPowerupAlpha = 1;
-	      //     this.currentTextSize = 1;
-	      //
-	      //     this.currentPowerup = 'Slow Ball';
-	      //     return ball.slowBall();
-	      //   } else {
-	      //     this.currentPowerupAlpha = 1;
-	      //     this.currentTextSize = 1;
-	      //
-	      //     this.currentPowerup = 'Fast Ball';
-	      //     return ball.fastBall();
-	      //   }
-	      // } else {
-	      //   this.currentPowerupAlpha = 1;
-	      //   this.currentTextSize = 1;
-	      //
-	      //   this.currentPowerup = 'Fast Ball';
-	      //   return ball.fastBall();
-	      // }
+	    } else if (rollDice > .6 && rollDice <= .8) {
+	      this.currentPowerupAlpha = 1;
+	      this.currentTextSize = 1;
+	      this.currentPowerup = 'Extra life';
+	      return game.extraLife();
 	    } else {
-	      this.chooseRandomPowerup(ball, paddle);
-	      // if (ball.moveY <= 6 || ball.moveY >= -6) {
-	      //   if (ball.moveX <= 6 || ball.moveX >= -6) {
-	      //     this.currentPowerupAlpha = 1;
-	      //     this.currentTextSize = 1;
-	      //
-	      //     this.currentPowerup = 'Fast Ball';
-	      //     return ball.fastBall();
-	      //   } else {
-	      //     this.currentPowerupAlpha = 1;
-	      //     this.currentTextSize = 1;
-	      //
-	      //     this.currentPowerup = 'Slow Ball';
-	      //     return ball.slowBall();
-	      //   }
-	      // } else {
-	      //   this.currentPowerupAlpha = 1;
-	      //   this.currentTextSize = 1;
-	      //
-	      //   this.currentPowerup = 'Slow Ball';
-	      //   return ball.slowBall();
-	      // }
+	      this.currentPowerupAlpha = 1;
+	      this.currentTextSize = 1;
+	      this.currentPowerup = 'Click to shoot missles';
+	      paddle.activateShoot();
 	    }
 	  }
 
 	  drawPowerupText(context) {
 	    let decrementer = .01;
-
+	    console.log(this.currentTextSize);
 	    this.currentTextSize += decrementer * 100;
 	    context.font = `${this.currentTextSize}px Ubuntu`;
 	    context.textAlign = 'center';
@@ -828,7 +872,7 @@
 	  }
 
 	  activateShoot() {
-	    this.ammo += 3;
+	    this.ammo += 4;
 	  }
 
 	  resetPaddle() {
@@ -849,8 +893,8 @@
 
 	  constructor(x, y) {
 	    super(x, y);
-	    this.width = 6;
-	    this.height = 6;
+	    this.width = 12;
+	    this.height = 12;
 	    this.moveX = 0;
 	    this.moveY = -0;
 	    this.radius = 6;
