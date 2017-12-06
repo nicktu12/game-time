@@ -1,36 +1,32 @@
-# Space Blox
+# [Space Blox](https://ameseee.github.io/game-time/)
 
-### Team: 
-Amy Holt & Nick Teets
+The focus of this project was to implement es6 friendly object oriented programming while building a game using HTML Canvas. Additionally, all game functionality was to be tested using Chai and Mocha. 
 
-### Project Requirements:
+### Installing
 
-#### Goals
+Install all node modules with the following command:
 
-* Use design patterns to drive both the design and implementation of code
-* Separate business-logic code from view-related code
-* Use test-driven design to build a client-side application
+```
+npm install
+```
 
-#### Playability Features
+Start the application on localhost:8080 with the following command:
 
-We want your game to be full-featured and playable — not just a proof of concept of the gameplay and rendering features.
-
-To this end, make sure to include sufficient UX to allow the user to fully interact with the game. This would include:
-
-* Indicate when the game is over and won or lost
-* Allow the user to start a new game
-* Include a clean UI surrounding the actual game interface itself
-* Create multiple rounds of difficulty (consider increasing factors such as game speed, randomness of starting setup, etc.).
-
-#### Code organization
-
-* Your game should make use of at least two classes, the exact number will depend on which game you choose and your design choices.
-* You should use inheritance with your classes. (i.e. a parent class should have properties that might be shared by several other child classes. The child classes should inherit those properties from the parent class.)
-* Each class should have its own file with the filename capitalized. The class should be capitalized as well. Only code that is a part of this class should be in this file.
+```
+npm start
+```
 
 #### Testing
 
-Each javascript file in your project should have it’s own test file e.g. if you have a MasterChief.js class file, all the tests for that class should be located in MasterChief-test.js
+Utilize TDD best practices while testing with Chai and Mocha. Run the following command to execute the test suite:
+```
+npm run test
+```
+
+## Authors
+
+* **Nick Teets** - [GitHub](https://github.com/nicktu12)
+* **Amy Holt** - [GitHub](https://github.com/ameseee)
 
 #### Built with: 
 * HTML
@@ -76,3 +72,7 @@ Each javascript file in your project should have it’s own test file e.g. if yo
 ### Win Game
 
 ![image](https://user-images.githubusercontent.com/25447342/29677826-9d57c7e0-88b9-11e7-9cfe-65de1e83e91d.png)
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
